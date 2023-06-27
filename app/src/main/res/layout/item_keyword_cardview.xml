@@ -6,6 +6,7 @@
     android:layout_height="50dp"
     android:backgroundTint="#F5F5F5"
     app:cardCornerRadius="20dp"
+    android:layout_marginEnd="8dp"
     >
 <!--active는    "#DEE9FF"-->
 
