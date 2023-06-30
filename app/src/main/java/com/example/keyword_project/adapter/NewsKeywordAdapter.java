@@ -14,8 +14,8 @@ import com.example.keyword_project.item.NewsItem;
 
 import java.util.List;
 
-public class NewsItemAdapter extends RecyclerView.Adapter<NewsItemAdapter.ViewHolder>{
-        private List<NewsItem> dataList;
+public class NewsKeywordAdapter extends RecyclerView.Adapter<NewsKeywordAdapter.ViewHolder>{
+        private List<String> dataList;
         private OnItemClickListener itemClickListener;
         public interface OnItemClickListener{
             void onItemClick(View v, int pos);
@@ -24,22 +24,21 @@ public class NewsItemAdapter extends RecyclerView.Adapter<NewsItemAdapter.ViewHo
         public void setOnItemClickListener(OnItemClickListener listener){
             this.itemClickListener = listener;
         }
-
-        public NewsItemAdapter(List<NewsItem> dataList) {
+        public NewsKeywordAdapter(List<String> dataList) {
             this.dataList = dataList;
         }
 
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_news_cardview, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_keyword_cardview, parent, false);
             return new ViewHolder(view);
         }
 
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            NewsItem item = dataList.get(position);
-            holder.bind(item);
+            String keyword = dataList.get(position);
+            holder.bind(keyword);
         }
 
         @Override
@@ -48,10 +47,7 @@ public class NewsItemAdapter extends RecyclerView.Adapter<NewsItemAdapter.ViewHo
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
-            private ImageView newsImageView;
-            private TextView newsTimeView;
-            private TextView newsTitleView;
-            private TextView newsTextView;
+            private TextView newsKeywordView;
 
 
             public ViewHolder(@NonNull View itemView) {
@@ -62,17 +58,11 @@ public class NewsItemAdapter extends RecyclerView.Adapter<NewsItemAdapter.ViewHo
                         itemClickListener.onItemClick(v,position);
                     }
                 });
-                newsImageView = itemView.findViewById(R.id.item_card_image_view);
-                newsTimeView = itemView.findViewById(R.id.item_card_time_view);
-                newsTitleView = itemView.findViewById(R.id.item_card_news_title);
-                newsTextView = itemView.findViewById(R.id.item_card_news_text);
+                newsKeywordView = itemView.findViewById(R.id.item_keyword_text_view);
             }
 
-            public void bind(NewsItem item) {
-                newsImageView.setImageResource(item.getImage());
-                newsTimeView.setText(item.getTime());
-                newsTitleView.setText(item.getTitle());
-                newsTextView.setText(item.getText());
+            public void bind(String keyword) {
+                newsKeywordView.setText(keyword);
             }
         }
 
