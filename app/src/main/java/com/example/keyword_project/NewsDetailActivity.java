@@ -13,8 +13,12 @@ public class NewsDetailActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_detail);
-        String newsUrl = getIntent().getStringExtra("newsUrl");
 
+        String newsUrl = getIntent().getStringExtra("newsUrl");
+        setNewsDetailWebView(newsUrl);
+    }
+
+    private void setNewsDetailWebView(String newsUrl){
         WebView webView = findViewById(R.id.news_detail_webview);
         webView.setWebViewClient(new WebViewClient());
         webView.loadUrl(newsUrl);
