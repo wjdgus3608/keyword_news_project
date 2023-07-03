@@ -96,10 +96,7 @@ public class MainActivity extends AppCompatActivity {
     private void setNewsRecyclerView(){
         List<NewsItem> dataList = getNewsList();
         RecyclerView recyclerView = findViewById(R.id.main_recyclerview);
-        NewsItemAdapter adapter = new NewsItemAdapter(dataList);
-        adapter.setOnItemClickListener((v, pos) -> {
-
-        });
+        NewsItemAdapter adapter = new NewsItemAdapter(dataList,this);
         recyclerView.setAdapter(adapter);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
