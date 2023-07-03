@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import com.example.keyword_project.adapter.NewsItemAdapter;
 import com.example.keyword_project.adapter.NewsKeywordAdapter;
 import com.example.keyword_project.item.NewsItem;
+import com.example.keyword_project.item.NewsKeyword;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setNewsKeywordRecyclerView(){
-        List<String> dataList = getKeywordList();
+        List<NewsKeyword> dataList = getKeywordList();
         RecyclerView recyclerView = findViewById(R.id.main_keyword_recyclerview);
         NewsKeywordAdapter adapter = new NewsKeywordAdapter(dataList);
 
@@ -47,37 +49,44 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
 
         adapter.setOnItemClickListener((v, pos) -> {
-            modifyKeywordColor(v,layoutManager);
-            clickedKeywordIndex = pos;
+            changeClickedKeyword(dataList,pos);
+            notifyAll();
         });
 
     }
 
-    private void modifyKeywordColor(View v, RecyclerView.LayoutManager layoutManager){
-        ColorStateList blueBackGround = ColorStateList.valueOf(Color.parseColor("#DEE9FF"));
-        ColorStateList whiteBackGround = ColorStateList.valueOf(Color.parseColor("#F5F5F5"));
-        int grayText = Color.parseColor("#B6B6B6");
-        int blueText = Color.parseColor("#3A7DFF");
-
-        View oldView = layoutManager.findViewByPosition(clickedKeywordIndex);
-        if(oldView != null){
-            oldView.setBackgroundTintList(whiteBackGround);
-            TextView tx = oldView.findViewById(R.id.item_keyword_text_view);
-            tx.setTextColor(grayText);
-        }
-
-        v.setBackgroundTintList(blueBackGround);
-        TextView tx = v.findViewById(R.id.item_keyword_text_view);
-        tx.setTextColor(blueText);
+    private void changeClickedKeyword(List<NewsKeyword> dataList, int pos){
+        resetPreviousKeywordView(dataList);
+        changeNextKeywordView(dataList, pos);
     }
-    private List<String> getKeywordList(){
-        List<String> list = new ArrayList<>();
 
-        list.add("속보");
-        list.add("특징주");
-        list.add("김하성");
-        list.add("첼시");
-        list.add("LG");
+    private void resetPreviousKeywordView(List<NewsKeyword> dataList){
+        dataList.get(clickedKeywordIndex).setClicked(false);
+    }
+
+    private void changeNextKeywordView(List<NewsKeyword> dataList, int pos){
+        clickedKeywordIndex = pos;
+        dataList.get(clickedKeywordIndex).setClicked(true);
+    }
+
+    private List<NewsKeyword> getKeywordList(){
+        List<NewsKeyword> list = new ArrayList<>();
+
+        list.add(new NewsKeyword("속보",true));
+        list.add(new NewsKeyword("특징주",false));
+        list.add(new NewsKeyword("김하성",false));
+        list.add(new NewsKeyword("첼시",false));
+        list.add(new NewsKeyword("LG",false));
+        list.add(new NewsKeyword("LG",false));
+        list.add(new NewsKeyword("LG",false));
+        list.add(new NewsKeyword("LG",false));
+        list.add(new NewsKeyword("LG",false));
+        list.add(new NewsKeyword("LG",false));
+        list.add(new NewsKeyword("LG",false));
+        list.add(new NewsKeyword("LG",false));
+        list.add(new NewsKeyword("LG",false));
+        list.add(new NewsKeyword("LG",false));
+        list.add(new NewsKeyword("LG",false));
 
         return list;
     }

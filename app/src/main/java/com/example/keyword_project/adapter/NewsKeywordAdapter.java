@@ -1,5 +1,7 @@
 package com.example.keyword_project.adapter;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,11 +13,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.keyword_project.R;
 import com.example.keyword_project.item.NewsItem;
+import com.example.keyword_project.item.NewsKeyword;
 
 import java.util.List;
 
 public class NewsKeywordAdapter extends RecyclerView.Adapter<NewsKeywordAdapter.ViewHolder>{
-        private List<String> dataList;
+        private List<NewsKeyword> dataList;
         private OnItemClickListener itemClickListener;
         public interface OnItemClickListener{
             void onItemClick(View v, int pos);
@@ -24,7 +27,7 @@ public class NewsKeywordAdapter extends RecyclerView.Adapter<NewsKeywordAdapter.
         public void setOnItemClickListener(OnItemClickListener listener){
             this.itemClickListener = listener;
         }
-        public NewsKeywordAdapter(List<String> dataList) {
+        public NewsKeywordAdapter(List<NewsKeyword> dataList) {
             this.dataList = dataList;
         }
 
@@ -37,8 +40,18 @@ public class NewsKeywordAdapter extends RecyclerView.Adapter<NewsKeywordAdapter.
 
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            String keyword = dataList.get(position);
-            holder.bind(keyword);
+            ColorStateList blueBackGround = ColorStateList.valueOf(Color.parseColor("#DEE9FF"));
+            ColorStateList whiteBackGround = ColorStateList.valueOf(Color.parseColor("#F5F5F5"));
+            int grayText = Color.parseColor("#B6B6B6");
+            int blueText = Color.parseColor("#3A7DFF");
+
+            NewsKeyword newsKeyword = dataList.get(position);
+            holder.bind(newsKeyword.getKeyword());
+
+            holder.itemView.setBackgroundTintList(newsKeyword.isClicked() ? whiteBackGround : blueBackGround);
+            TextView tx = holder.itemView.findViewById(R.id.item_keyword_text_view);
+            tx.setTextColor(newsKeyword.isClicked() ? grayText : blueText);
+
         }
 
         @Override
