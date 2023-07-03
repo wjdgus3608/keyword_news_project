@@ -47,25 +47,28 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
 
         adapter.setOnItemClickListener((v, pos) -> {
-            ColorStateList blueBackGround = ColorStateList.valueOf(Color.parseColor("#DEE9FF"));
-            ColorStateList whiteBackGround = ColorStateList.valueOf(Color.parseColor("#F5F5F5"));
-            int grayText = Color.parseColor("#B6B6B6");
-            int blueText = Color.parseColor("#3A7DFF");
-
-            View oldView = layoutManager.findViewByPosition(clickedKeywordIndex);
-            if(oldView != null){
-                oldView.setBackgroundTintList(whiteBackGround);
-                TextView tx = oldView.findViewById(R.id.item_keyword_text_view);
-                tx.setTextColor(grayText);
-            }
-
+            modifyKeywordColor(v,layoutManager);
             clickedKeywordIndex = pos;
-
-            v.setBackgroundTintList(blueBackGround);
-            TextView tx = v.findViewById(R.id.item_keyword_text_view);
-            tx.setTextColor(blueText);
         });
 
+    }
+
+    private void modifyKeywordColor(View v, RecyclerView.LayoutManager layoutManager){
+        ColorStateList blueBackGround = ColorStateList.valueOf(Color.parseColor("#DEE9FF"));
+        ColorStateList whiteBackGround = ColorStateList.valueOf(Color.parseColor("#F5F5F5"));
+        int grayText = Color.parseColor("#B6B6B6");
+        int blueText = Color.parseColor("#3A7DFF");
+
+        View oldView = layoutManager.findViewByPosition(clickedKeywordIndex);
+        if(oldView != null){
+            oldView.setBackgroundTintList(whiteBackGround);
+            TextView tx = oldView.findViewById(R.id.item_keyword_text_view);
+            tx.setTextColor(grayText);
+        }
+
+        v.setBackgroundTintList(blueBackGround);
+        TextView tx = v.findViewById(R.id.item_keyword_text_view);
+        tx.setTextColor(blueText);
     }
     private List<String> getKeywordList(){
         List<String> list = new ArrayList<>();
