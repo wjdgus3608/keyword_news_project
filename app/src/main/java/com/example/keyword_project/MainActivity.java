@@ -49,15 +49,16 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
 
         adapter.setOnItemClickListener((v, pos) -> {
-            changeClickedKeyword(dataList,pos);
-            notifyAll();
+            changeClickedKeyword(adapter,dataList,pos);
         });
 
     }
 
-    private void changeClickedKeyword(List<NewsKeyword> dataList, int pos){
+    private void changeClickedKeyword(NewsKeywordAdapter adapter, List<NewsKeyword> dataList, int pos){
         resetPreviousKeywordView(dataList);
+        adapter.notifyItemChanged(clickedKeywordIndex);
         changeNextKeywordView(dataList, pos);
+        adapter.notifyItemChanged(clickedKeywordIndex);
     }
 
     private void resetPreviousKeywordView(List<NewsKeyword> dataList){
