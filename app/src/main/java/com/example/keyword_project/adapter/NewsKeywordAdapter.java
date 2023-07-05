@@ -48,7 +48,7 @@ public class NewsKeywordAdapter extends RecyclerView.Adapter<NewsKeywordAdapter.
             NewsKeyword newsKeyword = dataList.get(position);
             holder.bind(newsKeyword.getKeyword());
 
-            holder.itemView.setBackgroundTintList(newsKeyword.isClicked() ? blueBackGround : whiteBackGround);
+            holder.itemView.findViewById(R.id.item_keyword_card_view).setBackgroundTintList(newsKeyword.isClicked() ? blueBackGround : whiteBackGround);
             TextView tx = holder.itemView.findViewById(R.id.item_keyword_text_view);
             tx.setTextColor(newsKeyword.isClicked() ? blueText : grayText);
 

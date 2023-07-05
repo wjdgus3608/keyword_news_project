@@ -1,5 +1,6 @@
 package com.example.keyword_project;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -26,7 +27,9 @@ import java.util.List;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
-
+    private NewsItemAdapter newsItemAdapter;
+    private final List<NewsItem> newsData = new ArrayList<>();
+    private final List<NewsItem> newsItemList = new ArrayList<>();
     private boolean isSettingBtnClicked = false;
     private int clickedKeywordIndex = 0;
     @Override
@@ -34,9 +37,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        callGetNewsDataApi();
+
         setNewsKeywordRecyclerView();
         setNewsRecyclerView();
         setSettingBtn();
+    }
+
+    private void callGetNewsDataApi(){
+
     }
 
     private void setNewsKeywordRecyclerView(){
@@ -50,8 +59,8 @@ public class MainActivity extends AppCompatActivity {
 
         adapter.setOnItemClickListener((v, pos) -> {
             changeClickedKeyword(adapter,dataList,pos);
+            renderNewsItem();
         });
-
     }
 
     private void changeClickedKeyword(NewsKeywordAdapter adapter, List<NewsKeyword> dataList, int pos){
@@ -59,6 +68,12 @@ public class MainActivity extends AppCompatActivity {
         adapter.notifyItemChanged(clickedKeywordIndex);
         changeNextKeywordView(dataList, pos);
         adapter.notifyItemChanged(clickedKeywordIndex);
+    }
+
+    private void renderNewsItem(){
+        newsItemList.clear();
+        newsItemList.add(new NewsItem(R.drawable.icon_badge,"20230606","title","text"));
+        newsItemAdapter.notifyDataSetChanged();
     }
 
     private void resetPreviousKeywordView(List<NewsKeyword> dataList){
@@ -94,27 +109,46 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void setNewsRecyclerView(){
-        List<NewsItem> dataList = getNewsList();
+        setNewsList();
+
         RecyclerView recyclerView = findViewById(R.id.main_recyclerview);
-        NewsItemAdapter adapter = new NewsItemAdapter(dataList,this);
-        recyclerView.setAdapter(adapter);
+        newsItemAdapter = new NewsItemAdapter(newsItemList,this);
+        recyclerView.setAdapter(newsItemAdapter);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
+
+        setNewsRecyclerViewScrollEvent(recyclerView);
     }
 
-    private List<NewsItem> getNewsList(){
-        List<NewsItem> list = new ArrayList<>();
+    private void setNewsList(){
+        newsItemList.add(new NewsItem(R.drawable.icon_badge,"20230606","title","text"));
+        newsItemList.add(new NewsItem(R.drawable.icon_badge,"20230606","title","text"));
+        newsItemList.add(new NewsItem(R.drawable.icon_badge,"20230606","title","text"));
+        newsItemList.add(new NewsItem(R.drawable.icon_badge,"20230606","title","text"));
+        newsItemList.add(new NewsItem(R.drawable.icon_badge,"20230606","title","text"));
+        newsItemList.add(new NewsItem(R.drawable.icon_badge,"20230606","title","text"));
+        newsItemList.add(new NewsItem(R.drawable.icon_badge,"20230606","title","text"));
+        newsItemList.add(new NewsItem(R.drawable.icon_badge,"20230606","title","text"));
+    }
 
-        list.add(new NewsItem(R.drawable.icon_badge,"20230606","title","text"));
-        list.add(new NewsItem(R.drawable.icon_badge,"20230606","title","text"));
-        list.add(new NewsItem(R.drawable.icon_badge,"20230606","title","text"));
-        list.add(new NewsItem(R.drawable.icon_badge,"20230606","title","text"));
-        list.add(new NewsItem(R.drawable.icon_badge,"20230606","title","text"));
-        list.add(new NewsItem(R.drawable.icon_badge,"20230606","title","text"));
-        list.add(new NewsItem(R.drawable.icon_badge,"20230606","title","text"));
-        list.add(new NewsItem(R.drawable.icon_badge,"20230606","title","text"));
+    private void setNewsRecyclerViewScrollEvent(RecyclerView recyclerView){
+        View subTitleView = findViewById(R.id.main_subtitle_container);
+        int startHeight = subTitleView.getLayoutParams().height;
 
-        return list;
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                scaleDownSubTitleView(recyclerView,subTitleView,startHeight);
+            }
+        });
+    }
+
+    private void scaleDownSubTitleView(RecyclerView recyclerView,View subTitleView, int startHeight){
+        int scrollY = recyclerView.computeVerticalScrollOffset(); // 수직 스크롤 위치
+        int currentHeight = startHeight - scrollY;
+        subTitleView.getLayoutParams().height = Math.max(currentHeight, 1);
+        subTitleView.requestLayout();
+        subTitleView.invalidate();
     }
 
     private void setSettingBtn(){
