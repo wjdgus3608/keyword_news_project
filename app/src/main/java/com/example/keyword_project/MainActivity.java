@@ -58,8 +58,13 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
 
         adapter.setOnItemClickListener((v, pos) -> {
-            changeClickedKeyword(adapter,dataList,pos);
-            renderNewsItem();
+            if(pos < dataList.size()-1) {
+                changeClickedKeyword(adapter, dataList, pos);
+                renderNewsItem();
+            }
+            else{
+                showAddKeywordPopup();
+            }
         });
     }
 
@@ -76,6 +81,9 @@ public class MainActivity extends AppCompatActivity {
         newsItemAdapter.notifyDataSetChanged();
     }
 
+    private void showAddKeywordPopup(){
+        
+    }
     private void resetPreviousKeywordView(List<NewsKeyword> dataList){
         dataList.get(clickedKeywordIndex).setClicked(false);
     }
@@ -104,7 +112,13 @@ public class MainActivity extends AppCompatActivity {
         list.add(new NewsKeyword("LG",false));
         list.add(new NewsKeyword("LG",false));
 
+        addPlusBtn(list);
+
         return list;
+    }
+
+    private void addPlusBtn(List<NewsKeyword> list){
+        list.add(new NewsKeyword("+",false));
     }
 
 
