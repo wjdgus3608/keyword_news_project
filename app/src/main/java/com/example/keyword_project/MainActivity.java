@@ -2,29 +2,27 @@ package com.example.keyword_project;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.res.ColorStateList;
-import android.graphics.Color;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.keyword_project.adapter.NewsItemAdapter;
 import com.example.keyword_project.adapter.NewsKeywordAdapter;
 import com.example.keyword_project.item.NewsItem;
 import com.example.keyword_project.item.NewsKeyword;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
     private NewsItemAdapter newsItemAdapter;
@@ -37,11 +35,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        FirebaseApp.initializeApp(this);
+
         callGetNewsDataApi();
 
         setNewsKeywordRecyclerView();
         setNewsRecyclerView();
         setSettingBtn();
+
+        Intent serviceIntent = new Intent(this,NotifyService.class);
+        startService(serviceIntent);
+
     }
 
     private void callGetNewsDataApi(){
@@ -82,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showAddKeywordPopup(){
-        
+
     }
     private void resetPreviousKeywordView(List<NewsKeyword> dataList){
         dataList.get(clickedKeywordIndex).setClicked(false);

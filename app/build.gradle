@@ -3,6 +3,7 @@ plugins {
 }
 
 
+
 android {
     namespace 'com.example.keyword_project'
     compileSdk 33
@@ -27,6 +28,8 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+
 }
 
 dependencies {
@@ -37,4 +40,15 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+
+    //권한요청 라이브러리
+    implementation 'io.github.ParkSangGwon:tedpermission-normal:3.3.0'
+    //푸시알림 라이브러리 FCM
+    implementation platform('com.google.firebase:firebase-bom:32.1.1')
+    implementation 'com.google.firebase:firebase-messaging'
+    implementation("com.google.firebase:firebase-analytics-ktx")
+
+
+
 }
+
