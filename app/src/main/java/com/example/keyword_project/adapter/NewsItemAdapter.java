@@ -1,5 +1,7 @@
 package com.example.keyword_project.adapter;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.keyword_project.NewsDetailActivity;
 import com.example.keyword_project.R;
 import com.example.keyword_project.item.NewsItem;
 
@@ -16,17 +19,11 @@ import java.util.List;
 
 public class NewsItemAdapter extends RecyclerView.Adapter<NewsItemAdapter.ViewHolder>{
         private List<NewsItem> dataList;
-        private OnItemClickListener itemClickListener;
-        public interface OnItemClickListener{
-            void onItemClick(View v, int pos);
-        }
+        private Context context;
 
-        public void setOnItemClickListener(OnItemClickListener listener){
-            this.itemClickListener = listener;
-        }
-
-        public NewsItemAdapter(List<NewsItem> dataList) {
+        public NewsItemAdapter(List<NewsItem> dataList, Context context) {
             this.dataList = dataList;
+            this.context = context;
         }
 
         @NonNull
@@ -40,6 +37,11 @@ public class NewsItemAdapter extends RecyclerView.Adapter<NewsItemAdapter.ViewHo
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             NewsItem item = dataList.get(position);
             holder.bind(item);
+            holder.itemView.setOnClickListener(v -> {
+                Intent intent = new Intent(context, NewsDetailActivity.class);
+                intent.putExtra("newsUrl",item.getUrlString());
+                context.startActivity(intent);
+            });
         }
 
         @Override
@@ -56,12 +58,6 @@ public class NewsItemAdapter extends RecyclerView.Adapter<NewsItemAdapter.ViewHo
 
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
-                itemView.setOnClickListener(v -> {
-                    if(itemClickListener!=null){
-                        int position = getAdapterPosition();
-                        itemClickListener.onItemClick(v,position);
-                    }
-                });
                 newsImageView = itemView.findViewById(R.id.item_card_image_view);
                 newsTimeView = itemView.findViewById(R.id.item_card_time_view);
                 newsTitleView = itemView.findViewById(R.id.item_card_news_title);

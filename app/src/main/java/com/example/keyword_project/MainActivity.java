@@ -1,53 +1,78 @@
 package com.example.keyword_project;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.Dialog;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.Gravity;
+import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.keyword_project.adapter.NewsItemAdapter;
 import com.example.keyword_project.adapter.NewsKeywordAdapter;
 import com.example.keyword_project.item.NewsItem;
+import com.example.keyword_project.item.NewsKeyword;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
-
+    private NewsItemAdapter newsItemAdapter;
+    private final List<NewsItem> newsData = new ArrayList<>();
+    private final List<NewsItem> newsItemList = new ArrayList<>();
     private boolean isSettingBtnClicked = false;
-    private boolean isSettingAlaramBtnClicked = false;
     private int clickedKeywordIndex = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        FirebaseApp.initializeApp(this);
+
+        callGetNewsDataApi();
+
         setNewsKeywordRecyclerView();
         setNewsRecyclerView();
         setSettingBtn();
+
+        Intent serviceIntent = new Intent(this,NotifyService.class);
+        startService(serviceIntent);
+
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w("my@@", "Fetching FCM registration token failed", task.getException());
+                            return;
+                        }
+
+                        // Get new FCM registration token
+                        String token = (String)task.getResult();
+
+                        // Log and toast
+                        String msg = getString(R.string.msg_token_fmt, token);
+                        Log.d("my@@", token);
+                        Toast.makeText(MainActivity.this, token, Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+    }
+
+    private void callGetNewsDataApi(){
+
     }
 
     private void setNewsKeywordRecyclerView(){
-        List<String> dataList = getKeywordList();
+        List<NewsKeyword> dataList = getKeywordList();
         RecyclerView recyclerView = findViewById(R.id.main_keyword_recyclerview);
         NewsKeywordAdapter adapter = new NewsKeywordAdapter(dataList);
 
@@ -56,64 +81,107 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
 
         adapter.setOnItemClickListener((v, pos) -> {
-            ColorStateList blueBackGround = ColorStateList.valueOf(Color.parseColor("#DEE9FF"));
-            ColorStateList whiteBackGround = ColorStateList.valueOf(Color.parseColor("#F5F5F5"));
-            int grayText = Color.parseColor("#B6B6B6");
-            int blueText = Color.parseColor("#3A7DFF");
-
-            View oldView = layoutManager.findViewByPosition(clickedKeywordIndex);
-            if(oldView != null){
-                oldView.setBackgroundTintList(whiteBackGround);
-                TextView tx = oldView.findViewById(R.id.item_keyword_text_view);
-                tx.setTextColor(grayText);
+            if(pos < dataList.size()-1) {
+                changeClickedKeyword(adapter, dataList, pos);
+                renderNewsItem();
             }
-
-            clickedKeywordIndex = pos;
-
-            v.setBackgroundTintList(blueBackGround);
-            TextView tx = v.findViewById(R.id.item_keyword_text_view);
-            tx.setTextColor(blueText);
+            else{
+                showAddKeywordPopup();
+            }
         });
+    }
+
+    private void changeClickedKeyword(NewsKeywordAdapter adapter, List<NewsKeyword> dataList, int pos){
+        resetPreviousKeywordView(dataList);
+        adapter.notifyItemChanged(clickedKeywordIndex);
+        changeNextKeywordView(dataList, pos);
+        adapter.notifyItemChanged(clickedKeywordIndex);
+    }
+
+    private void renderNewsItem(){
+        newsItemList.clear();
+        newsItemList.add(new NewsItem(R.drawable.icon_badge,"20230606","title","text"));
+        newsItemAdapter.notifyDataSetChanged();
+    }
+
+    private void showAddKeywordPopup(){
 
     }
-    private List<String> getKeywordList(){
-        List<String> list = new ArrayList<>();
+    private void resetPreviousKeywordView(List<NewsKeyword> dataList){
+        dataList.get(clickedKeywordIndex).setClicked(false);
+    }
 
-        list.add("속보");
-        list.add("특징주");
-        list.add("김하성");
-        list.add("첼시");
-        list.add("LG");
+    private void changeNextKeywordView(List<NewsKeyword> dataList, int pos){
+        clickedKeywordIndex = pos;
+        dataList.get(clickedKeywordIndex).setClicked(true);
+    }
+
+    private List<NewsKeyword> getKeywordList(){
+        List<NewsKeyword> list = new ArrayList<>();
+
+        list.add(new NewsKeyword("속보",true));
+        list.add(new NewsKeyword("특징주",false));
+        list.add(new NewsKeyword("김하성",false));
+        list.add(new NewsKeyword("첼시",false));
+        list.add(new NewsKeyword("LG",false));
+        list.add(new NewsKeyword("LG",false));
+        list.add(new NewsKeyword("LG",false));
+        list.add(new NewsKeyword("LG",false));
+        list.add(new NewsKeyword("LG",false));
+        list.add(new NewsKeyword("LG",false));
+        list.add(new NewsKeyword("LG",false));
+        list.add(new NewsKeyword("LG",false));
+        list.add(new NewsKeyword("LG",false));
+        list.add(new NewsKeyword("LG",false));
+        list.add(new NewsKeyword("LG",false));
+
+        addPlusBtn(list);
 
         return list;
     }
 
 
     private void setNewsRecyclerView(){
-        List<NewsItem> dataList = getNewsList();
-        RecyclerView recyclerView = findViewById(R.id.main_recyclerview);
-        NewsItemAdapter adapter = new NewsItemAdapter(dataList);
-        adapter.setOnItemClickListener((v, pos) -> {
+        setNewsList();
 
-        });
-        recyclerView.setAdapter(adapter);
+        RecyclerView recyclerView = findViewById(R.id.main_recyclerview);
+        newsItemAdapter = new NewsItemAdapter(newsItemList,this);
+        recyclerView.setAdapter(newsItemAdapter);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
+
+        setNewsRecyclerViewScrollEvent(recyclerView);
     }
 
-    private List<NewsItem> getNewsList(){
-        List<NewsItem> list = new ArrayList<>();
+    private void setNewsList(){
+        newsItemList.add(new NewsItem(R.drawable.icon_badge,"20230606","title","text"));
+        newsItemList.add(new NewsItem(R.drawable.icon_badge,"20230606","title","text"));
+        newsItemList.add(new NewsItem(R.drawable.icon_badge,"20230606","title","text"));
+        newsItemList.add(new NewsItem(R.drawable.icon_badge,"20230606","title","text"));
+        newsItemList.add(new NewsItem(R.drawable.icon_badge,"20230606","title","text"));
+        newsItemList.add(new NewsItem(R.drawable.icon_badge,"20230606","title","text"));
+        newsItemList.add(new NewsItem(R.drawable.icon_badge,"20230606","title","text"));
+        newsItemList.add(new NewsItem(R.drawable.icon_badge,"20230606","title","text"));
+    }
 
-        list.add(new NewsItem(R.drawable.icon_badge,"20230606","title","text"));
-        list.add(new NewsItem(R.drawable.icon_badge,"20230606","title","text"));
-        list.add(new NewsItem(R.drawable.icon_badge,"20230606","title","text"));
-        list.add(new NewsItem(R.drawable.icon_badge,"20230606","title","text"));
-        list.add(new NewsItem(R.drawable.icon_badge,"20230606","title","text"));
-        list.add(new NewsItem(R.drawable.icon_badge,"20230606","title","text"));
-        list.add(new NewsItem(R.drawable.icon_badge,"20230606","title","text"));
-        list.add(new NewsItem(R.drawable.icon_badge,"20230606","title","text"));
+    private void setNewsRecyclerViewScrollEvent(RecyclerView recyclerView){
+        View subTitleView = findViewById(R.id.main_subtitle_container);
+        int startHeight = subTitleView.getLayoutParams().height;
 
-        return list;
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                scaleDownSubTitleView(recyclerView,subTitleView,startHeight);
+            }
+        });
+    }
+
+    private void scaleDownSubTitleView(RecyclerView recyclerView,View subTitleView, int startHeight){
+        int scrollY = recyclerView.computeVerticalScrollOffset(); // 수직 스크롤 위치
+        int currentHeight = startHeight - scrollY;
+        subTitleView.getLayoutParams().height = Math.max(currentHeight, 1);
+        subTitleView.requestLayout();
+        subTitleView.invalidate();
     }
 
     private void setSettingBtn(){
@@ -121,7 +189,6 @@ public class MainActivity extends AppCompatActivity {
 
         settingBtn.setOnClickListener(v -> {
             switchSettingBtnImage(settingBtn);
-            openPopUp();
         });
     }
 

@@ -6,6 +6,10 @@ public class NewsItem {
     private String title;
     private String text;
 
+
+
+    private String urlString = "https://news.mtn.co.kr/news-detail/2023070309265394546";
+
     public NewsItem(int image, String time, String title, String text) {
         this.image = image;
         this.time = time;
@@ -43,5 +47,13 @@ public class NewsItem {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public String getUrlString() {
+        return urlString;
+    }
+
+    public void setUrlString(String urlString) {
+        this.urlString = urlString;
     }
 }
