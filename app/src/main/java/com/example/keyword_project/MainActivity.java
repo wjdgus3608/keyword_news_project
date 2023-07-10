@@ -5,9 +5,11 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Dialog;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -23,9 +25,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+
 public class MainActivity extends AppCompatActivity {
 
     private boolean isSettingBtnClicked = false;
+    private boolean isSettingAlaramBtnClicked = false;
     private int clickedKeywordIndex = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,11 +121,39 @@ public class MainActivity extends AppCompatActivity {
 
         settingBtn.setOnClickListener(v -> {
             switchSettingBtnImage(settingBtn);
+            openPopUp();
         });
     }
 
     private void switchSettingBtnImage(ImageButton settingBtn){
         settingBtn.setImageResource(isSettingBtnClicked ? R.drawable.icon_setting : R.drawable.icon_close);
         isSettingBtnClicked = !isSettingBtnClicked;
+    }
+
+    private void openPopUp(){
+        // 팝업을 띄우기 위한 AlertDialog.Builder 생성
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+        // XML 레이아웃 파일을 인플레이트하여 팝업 내용으로 설정
+        builder.setView(getLayoutInflater().inflate(R.layout.popup_layout, null));
+
+        // AlertDialog 생성 및 팝업 표시
+        AlertDialog dialog = builder.create();
+        dialog.getWindow().setGravity(Gravity.BOTTOM);
+        dialog.show();
+
+        setSubSettingBtn(dialog);
+    }
+
+    private void setSubSettingBtn(AlertDialog dialog){
+        ImageButton settingBtn = dialog.findViewById(R.id.sub_alaram_btn);
+
+        settingBtn.setOnClickListener(v -> {
+            switchalaramBtnImage(settingBtn);
+        });
+    }
+    private void switchalaramBtnImage(ImageButton settingBtn){
+        settingBtn.setImageResource(isSettingAlaramBtnClicked ? R.drawable.icon_alarm : R.drawable.icon_noalarm);
+        isSettingAlaramBtnClicked = !isSettingAlaramBtnClicked;
     }
 }
