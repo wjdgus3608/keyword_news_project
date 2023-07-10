@@ -96,6 +96,7 @@ public class NotifyService extends FirebaseMessagingService {
     public void onMessageReceived(@NonNull RemoteMessage message) {
         super.onMessageReceived(message);
         if(message.getNotification() != null){
+
             String title = message.getNotification().getTitle();
             String body = message.getNotification().getBody();
 
@@ -111,6 +112,8 @@ public class NotifyService extends FirebaseMessagingService {
 
         sendRegistrationToServer(token);
     }
+
+
 
     private void sendRegistrationToServer(String token){
 

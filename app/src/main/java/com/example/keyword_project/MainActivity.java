@@ -56,10 +56,10 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         // Get new FCM registration token
-                        String token = task.getResult();
+                        String token = (String)task.getResult();
 
                         // Log and toast
-//                        String msg = getString(R.string.msg_token_fmt, token);
+                        String msg = getString(R.string.msg_token_fmt, token);
                         Log.d("my@@", token);
                         Toast.makeText(MainActivity.this, token, Toast.LENGTH_SHORT).show();
                     }

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">keyword_project</string>
+    <string name="msg_token_fmt">1%s</string>
 </resources>
