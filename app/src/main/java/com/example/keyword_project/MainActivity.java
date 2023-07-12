@@ -1,6 +1,7 @@
 package com.example.keyword_project;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -8,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -29,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private final List<NewsItem> newsData = new ArrayList<>();
     private final List<NewsItem> newsItemList = new ArrayList<>();
     private boolean isSettingBtnClicked = false;
+    private boolean isSettingAlaramBtnClicked = false;
     private int clickedKeywordIndex = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,7 +143,9 @@ public class MainActivity extends AppCompatActivity {
         return list;
     }
 
-
+    private void addPlusBtn(List<NewsKeyword> list){
+        list.add(new NewsKeyword("+",false));
+    }
     private void setNewsRecyclerView(){
         setNewsList();
 
@@ -189,6 +194,7 @@ public class MainActivity extends AppCompatActivity {
 
         settingBtn.setOnClickListener(v -> {
             switchSettingBtnImage(settingBtn);
+            openPopUp();
         });
     }
 
