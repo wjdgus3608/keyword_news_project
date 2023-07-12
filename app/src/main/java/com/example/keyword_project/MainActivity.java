@@ -140,10 +140,6 @@ public class MainActivity extends AppCompatActivity {
         return list;
     }
 
-    private void addPlusBtn(List<NewsKeyword> list){
-        list.add(new NewsKeyword("+",false));
-    }
-
 
     private void setNewsRecyclerView(){
         setNewsList();
@@ -199,5 +195,32 @@ public class MainActivity extends AppCompatActivity {
     private void switchSettingBtnImage(ImageButton settingBtn){
         settingBtn.setImageResource(isSettingBtnClicked ? R.drawable.icon_setting : R.drawable.icon_close);
         isSettingBtnClicked = !isSettingBtnClicked;
+    }
+
+    private void openPopUp(){
+        // 팝업을 띄우기 위한 AlertDialog.Builder 생성
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+        // XML 레이아웃 파일을 인플레이트하여 팝업 내용으로 설정
+        builder.setView(getLayoutInflater().inflate(R.layout.popup_layout, null));
+
+        // AlertDialog 생성 및 팝업 표시
+        AlertDialog dialog = builder.create();
+        dialog.getWindow().setGravity(Gravity.BOTTOM);
+        dialog.show();
+
+        setSubSettingBtn(dialog);
+    }
+
+    private void setSubSettingBtn(AlertDialog dialog){
+        ImageButton settingBtn = dialog.findViewById(R.id.sub_alaram_btn);
+
+        settingBtn.setOnClickListener(v -> {
+            switchalaramBtnImage(settingBtn);
+        });
+    }
+    private void switchalaramBtnImage(ImageButton settingBtn){
+        settingBtn.setImageResource(isSettingAlaramBtnClicked ? R.drawable.icon_alarm : R.drawable.icon_noalarm);
+        isSettingAlaramBtnClicked = !isSettingAlaramBtnClicked;
     }
 }
