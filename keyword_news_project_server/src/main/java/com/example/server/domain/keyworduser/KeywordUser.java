@@ -1,14 +1,17 @@
-package com.example.server.domain;
+package com.example.server.domain.keyworduser;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.Id;
+import java.util.UUID;
 
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Getter
+@Setter
 @Builder
 public class KeywordUser {
     @Id
@@ -23,4 +26,11 @@ public class KeywordUser {
     private String fetchTime;
     @ColumnDefault("'5'")
     private String fetchInterval;
+
+    public static KeywordUser generateUser(){
+        return KeywordUser.builder()
+                .userToken(UUID.randomUUID().toString())
+                .build();
+    }
+
 }
