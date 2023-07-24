@@ -39,6 +39,9 @@ public class KeywordUserService {
         else if(dto.getUpdateType() == UpdateType.ALARM_ALLOWED){
             user.get().setAlarmAllowed(Boolean.getBoolean(dto.getUpdateValue()));
         }
+        else if(dto.getUpdateType() == UpdateType.IS_VIP){
+            user.get().setVip(Boolean.getBoolean(dto.getUpdateValue()));
+        }
         else if(dto.getUpdateType() == UpdateType.FETCH_TIME){
             user.get().setFetchTime(dto.getUpdateValue());
         }
