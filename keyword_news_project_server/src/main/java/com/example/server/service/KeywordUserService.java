@@ -14,10 +14,12 @@ import java.util.Optional;
 public class KeywordUserService {
     private final KeywordUserRepository keywordUserRepository;
 
-    public String signUp(){
+    public Optional<String> signUp(){
         KeywordUser user = KeywordUser.generateUser();
+        if(keywordUserRepository.existsById(user.getUserToken()))
+            return Optional.empty();
         keywordUserRepository.save(user);
-        return user.getUserToken();
+        return Optional.of(user.getUserToken());
     }
 
     public Optional<KeywordUser> logIn(String userToken){
