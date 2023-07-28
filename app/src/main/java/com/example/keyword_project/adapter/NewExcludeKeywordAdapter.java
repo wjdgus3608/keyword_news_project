@@ -76,4 +76,10 @@ public class NewExcludeKeywordAdapter extends RecyclerView.Adapter<NewExcludeKey
             }
         }
     }
+
+    public void allDelete(){
+        while (!data.isEmpty()) {
+            data.remove(0);
+        }
+    }
 }

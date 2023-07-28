@@ -316,7 +316,8 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // 기존의 어댑터를 사용하도록 수정
-        newIncludeKeywordAdapter = new NewIncludeKeywordAdapter(keywordIncludeDataList);
+        if (newIncludeKeywordAdapter == null){
+        newIncludeKeywordAdapter = new NewIncludeKeywordAdapter(keywordIncludeDataList);}
         recyclerView.setAdapter(newIncludeKeywordAdapter);
 
         //기존데이터 있으면 넣기.
@@ -334,6 +335,10 @@ public class MainActivity extends AppCompatActivity {
                 addDataToList(newKeyword);
                 keywordEditText.setText("");
             }
+        });
+
+        dialog.setOnDismissListener(dialogInterface -> {
+            newIncludeKeywordAdapter.allDelete();
         });
     }
 
@@ -353,7 +358,9 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // 기존의 어댑터를 사용하도록 수정
-        newExcludeKeywordAdapter = new NewExcludeKeywordAdapter(keywordExcludeDataList);
+        if (newExcludeKeywordAdapter == null){
+        newExcludeKeywordAdapter = new NewExcludeKeywordAdapter(keywordExcludeDataList);}
+
         recyclerView.setAdapter(newExcludeKeywordAdapter);
 
         //기존데이터 있으면 넣기.
@@ -371,6 +378,10 @@ public class MainActivity extends AppCompatActivity {
                 addDataToExcludeList(newKeyword);
                 keywordEditText.setText("");
             }
+        });
+
+        dialog.setOnDismissListener(dialogInterface -> {
+            newExcludeKeywordAdapter.allDelete();
         });
     }
 
