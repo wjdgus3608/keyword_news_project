@@ -23,6 +23,8 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.example.keyword_project.adapter.NewExcludeKeywordAdapter;
+import com.example.keyword_project.adapter.NewIncludeKeywordAdapter;
 import com.example.keyword_project.adapter.NewsItemAdapter;
 import com.example.keyword_project.adapter.NewsKeywordAdapter;
 import com.example.keyword_project.item.NewsItem;
@@ -45,7 +47,13 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<String> keywordList = new ArrayList<>();
 
+    private NewIncludeKeywordAdapter newIncludeKeywordAdapter;
+    private NewExcludeKeywordAdapter newExcludeKeywordAdapter;
+    private List<String> keywordIncludeDataList = new ArrayList<>();
+    private List<String> keywordExcludeDataList = new ArrayList<>();
 
+
+    private boolean isPopupShown = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
         Intent serviceIntent = new Intent(this, NotifyService.class);
         startService(serviceIntent);
+
 
 //        FirebaseMessaging.getInstance().getToken()
 //                .addOnCompleteListener(new OnCompleteListener<String>() {
@@ -208,7 +217,9 @@ public class MainActivity extends AppCompatActivity {
 
         settingBtn.setOnClickListener(v -> {
             switchSettingBtnImage(settingBtn);
-            openPopUp();
+            if (!isPopupShown) {
+                openPopUp();
+            }
         });
     }
 
@@ -218,25 +229,36 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void openPopUp() {
-        // 팝업을 띄우기 위한 AlertDialog.Builder 생성
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        if (!isPopupShown) {
+            // 팝업을 띄우기 위한 AlertDialog.Builder 생성
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 
-        // XML 레이아웃 파일을 인플레이트하여 팝업 내용으로 설정
-        builder.setView(getLayoutInflater().inflate(R.layout.popup_layout, null));
+            // XML 레이아웃 파일을 인플레이트하여 팝업 내용으로 설정
+            builder.setView(getLayoutInflater().inflate(R.layout.popup_layout, null));
 
-        // AlertDialog 생성 및 팝업 표시
-        AlertDialog dialog = builder.create();
-        dialog.getWindow().setGravity(Gravity.BOTTOM);
-        dialog.show();
+            // AlertDialog 생성 및 팝업 표시
+            AlertDialog dialog = builder.create();
+            dialog.getWindow().setGravity(Gravity.BOTTOM);
+            dialog.show();
 
-        setSubSettingBtn(dialog);
+            // 팝업이 띄워져 있다고 표시
+            isPopupShown = true;
+
+            setSubSettingBtn(dialog);
+
+            // AlertDialog의 dismiss 리스너를 설정하여 팝업이 닫힐 때 isPopupShown 값을 false로 변경
+            dialog.setOnDismissListener(dialogInterface -> {
+                isPopupShown = false;
+            });
+        }
     }
 
     private void setSubSettingBtn(AlertDialog dialog) {
         ImageButton settingBtn = dialog.findViewById(R.id.sub_alaram_btn);
         ImageButton settingBtn2 = dialog.findViewById(R.id.sub_clock_btn);
-
         ImageButton settingBtn4 = dialog.findViewById(R.id.sub_keyword_btn);
+        ImageButton settingBtn5 = dialog.findViewById(R.id.sub_except_keyword_btn);
+
 
         settingBtn.setOnClickListener(v -> {
             switchalaramBtnImage(settingBtn);
@@ -247,9 +269,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
         settingBtn4.setOnClickListener(v ->{
-            setkeyWord(settingBtn4);
+            setIncludekeyWord();
         });
 
+        settingBtn5.setOnClickListener(v ->{
+            setExcludekeyWord();
+        });
     }
 
     private void switchalaramBtnImage(ImageButton settingBtn) {
@@ -279,9 +304,7 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    private void setkeyWord(ImageButton settingBtn) {
-        Log.d("test", "bbbb");
-
+    private void setIncludekeyWord() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
         View view = inflater.inflate(R.layout.keyword_insert, null);
@@ -289,29 +312,69 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog dialog = builder.create();
         dialog.show();
 
-        final EditText keywordEditText = view.findViewById(R.id.keywordEditText);
-        TextView keywordListTextView = view.findViewById(R.id.keywordListTextView);
+        RecyclerView recyclerView = view.findViewById(R.id.keyword_include_recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // keyword_insert.xml 레이아웃 내의 버튼을 찾도록 수정
+        // 기존의 어댑터를 사용하도록 수정
+        newIncludeKeywordAdapter = new NewIncludeKeywordAdapter(keywordIncludeDataList);
+        recyclerView.setAdapter(newIncludeKeywordAdapter);
+
+        //기존데이터 있으면 넣기.
+        newIncludeKeywordAdapter.addItem("포함키워드 테스트1");
+        newIncludeKeywordAdapter.addItem("포함키워드 테스트2");
+
+        // 뷰에서 addKeywordButton을 찾음
         Button addKeywordButton = view.findViewById(R.id.addKeywordButton);
-        addKeywordButton.setOnClickListener(v ->{
-            String keyword = keywordEditText.getText().toString().trim();
-            keywordList.add(keyword);
-            updateKeywordListTextView(keywordListTextView);
-            Log.d("test", "aaaa");
-            Log.d("test", "keywordList:"+keywordList.get(0));
+        EditText keywordEditText = view.findViewById(R.id.keywordEditText);
+
+        addKeywordButton.setOnClickListener(v -> {
+            // 버튼 클릭시 dataList에 값 추가하고 RecyclerView에 업데이트
+            String newKeyword = keywordEditText.getText().toString().trim();
+            if (!newKeyword.isEmpty()) {
+                addDataToList(newKeyword);
+                keywordEditText.setText("");
+            }
         });
     }
 
-    private void updateKeywordListTextView(TextView keywordListTextView) {
-        // 'keyword_insert.xml' 레이아웃에서 keywordListTextView를 찾도록 수정
+    private void addDataToList(String newData) {
+        newIncludeKeywordAdapter.addItem(newData);
+    }
 
-        StringBuilder keywordText = new StringBuilder("추가된 키워드 목록:\n");
-        for (String keyword : keywordList) {
-            keywordText.append("- ").append(keyword).append("\n");
-        }
-        Log.d("test", "keywordList:"+keywordList);
+    private void setExcludekeyWord() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.keyword_exclude, null);
+        builder.setView(view);
+        AlertDialog dialog = builder.create();
+        dialog.show();
 
-        keywordListTextView.setText(keywordText);
+        RecyclerView recyclerView = view.findViewById(R.id.keyword_exclude_recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        // 기존의 어댑터를 사용하도록 수정
+        newExcludeKeywordAdapter = new NewExcludeKeywordAdapter(keywordExcludeDataList);
+        recyclerView.setAdapter(newExcludeKeywordAdapter);
+
+        //기존데이터 있으면 넣기.
+        newExcludeKeywordAdapter.addItem("제외키워드 테스트1");
+        newExcludeKeywordAdapter.addItem("제외키워드 테스트2");
+
+        // 뷰에서 addKeywordButton을 찾음
+        Button addKeywordButton = view.findViewById(R.id.excludeAddKeywordButton);
+        EditText keywordEditText = view.findViewById(R.id.excludeKeywordEditText);
+
+        addKeywordButton.setOnClickListener(v -> {
+            // 버튼 클릭시 dataList에 값 추가하고 RecyclerView에 업데이트
+            String newKeyword = keywordEditText.getText().toString().trim();
+            if (!newKeyword.isEmpty()) {
+                addDataToExcludeList(newKeyword);
+                keywordEditText.setText("");
+            }
+        });
+    }
+
+    private void addDataToExcludeList(String newData) {
+        newExcludeKeywordAdapter.addItem(newData);
     }
 }

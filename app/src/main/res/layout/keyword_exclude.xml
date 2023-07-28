@@ -7,13 +7,13 @@
     android:padding="16dp">
 
     <EditText
-        android:id="@+id/keywordEditText"
+        android:id="@+id/excludeKeywordEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="포함키워드를 입력하세요" />
+        android:hint="제외키워드를 입력하세요" />
 
     <Button
-        android:id="@+id/addKeywordButton"
+        android:id="@+id/excludeAddKeywordButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
@@ -21,7 +21,7 @@
 
     <!-- RecyclerView 높이를 wrap_content로 변경 -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/keyword_include_recyclerView"
+        android:id="@+id/keyword_exclude_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
