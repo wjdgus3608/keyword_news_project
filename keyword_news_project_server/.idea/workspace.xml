@@ -6,6 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="3d47abef-a7d5-4142-b361-ade6088279e1" name="Changes" comment="Changes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/server/domain/searchkeyword/SearchKeyword.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/server/domain/searchkeyword/SearchKeyword.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/server/domain/searchkeyword/dto/addKeywordDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/server/domain/searchkeyword/dto/AddKeywordDTO.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,6 +61,14 @@
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.13140607" />
     <property name="settings.editor.selected.configurable" value="reference.settingsdialog.project.gradle" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.example.server.domain.searchkeyword.dto" />
+      <recent name="com.example.server.controller" />
+      <recent name="com.example.server.service" />
+      <recent name="com.example.server.repository" />
+    </key>
   </component>
   <component name="RunManager">
     <configuration name="ServerApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">

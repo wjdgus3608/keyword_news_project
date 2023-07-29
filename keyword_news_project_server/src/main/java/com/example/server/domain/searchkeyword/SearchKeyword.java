@@ -27,4 +27,19 @@ public class SearchKeyword {
     private List<String> containKeywords = new ArrayList<>();
     @Column
     private List<String> excludeKeywords = new ArrayList<>();
+
+    public void addContainKeyword(String keyword){
+        if(!containKeywords.contains(keyword))
+            containKeywords.add(keyword);
+    }
+    public void addExcludeKeyword(String keyword){
+        if(!excludeKeywords.contains(keyword))
+            excludeKeywords.add(keyword);
+    }
+    public void removeContainKeyword(String keyword){
+        containKeywords.remove(keyword);
+    }
+    public void removeExcludeKeyword(String keyword){
+            excludeKeywords.remove(keyword);
+    }
 }
