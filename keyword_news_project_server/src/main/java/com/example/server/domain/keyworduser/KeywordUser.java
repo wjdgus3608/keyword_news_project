@@ -2,9 +2,9 @@ package com.example.server.domain.keyworduser;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
-import org.springframework.data.annotation.Id;
 import java.util.UUID;
 
 @Entity
@@ -16,7 +16,8 @@ import java.util.UUID;
 public class KeywordUser {
     @Id
     private String userToken;
-    @Column(nullable = false)
+//    @Column(nullable = false)
+    @Column
     private String fcmToken;
     @ColumnDefault("false")
     private boolean isVip;

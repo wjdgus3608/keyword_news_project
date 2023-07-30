@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -28,8 +29,8 @@ public class SearchKeywordController {
         return ResponseEntity.ok().build();
     }
     @PostMapping("/findAllKeyword/{ownerId}")
-    public List<SearchKeyword> findAllKeyword(@PathVariable String ownerId){
-        return searchKeywordService.findAllKeyword(ownerId);
+    public List<SearchKeyword> findAllKeyword(@PathVariable Map<String,String> data){
+        return searchKeywordService.findAllKeyword(data.get("ownerId"));
     }
     @PostMapping("/findKeywordByInfo")
     public Optional<SearchKeyword> findKeywordByInfo(@RequestBody @Valid FindKeywordDTO dto){
