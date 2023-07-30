@@ -2,10 +2,18 @@ package com.example.keyword_project;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.util.Log;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
+import okhttp3.Response;
 
 public class LogInActivity extends AppCompatActivity {
     @Override
@@ -17,16 +25,56 @@ public class LogInActivity extends AppCompatActivity {
         Button loginBtnGuest = findViewById(R.id.login_btn_guest);
 
         loginBtn.setOnClickListener(view -> {
-            moveToMainPage();
+            EditText editText = findViewById(R.id.login_textview);
+            String userToken = editText.getText().toString();
+            Log.d("my@@",userToken);
+            callLogIn(userToken);
         });
 
         loginBtnGuest.setOnClickListener(view -> {
-            moveToMainPage();
+            callSignUp();
         });
     }
 
-    private void moveToMainPage(){
+    private void moveToMainPage(String userData){
         Intent intent = new Intent(this,MainActivity.class);
+        intent.putExtra("userData",userData);
         startActivity(intent);
     }
+
+    private void callSignUp(){
+        //49.247.40.141:80/find-user
+
+
+        String serverUrl = "http://49.247.40.141:80/user";
+
+        GetApiTask task = new GetApiTask(result -> {
+            TextView textView = findViewById(R.id.login_textview);
+            Log.d("my@@",result);
+            textView.setText(result);
+            Toast.makeText(this,"ID 토큰이 생성되었습니다. 꼭 저장후 추후 로그인에 사용하세요",Toast.LENGTH_SHORT).show();
+        });
+        task.execute(serverUrl);
+
+    }
+
+    private void callLogIn(String userToken){
+        String serverUrl = "http://49.247.40.141:80/logIn";
+
+        String jsonData = "{\"userToken\":\""+userToken+"\"}";
+
+
+        PostApiTask task = new PostApiTask((responseCode,result) -> {
+            if(responseCode==200){
+                moveToMainPage(result);
+            }
+            else{
+                Toast.makeText(this,"토큰값이 유효하지 않습니다.",Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        task.execute(serverUrl,jsonData);
+
+    }
+
 }
