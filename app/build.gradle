@@ -49,6 +49,8 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:32.1.0')
     implementation 'com.google.firebase:firebase-messaging'
     implementation 'com.google.firebase:firebase-analytics'
+    //API 사용 라이브러리
+    implementation 'com.squareup.okhttp3:okhttp:4.9.1'  // 버전은 최신 버전으로 변경 가능
 
 
 
