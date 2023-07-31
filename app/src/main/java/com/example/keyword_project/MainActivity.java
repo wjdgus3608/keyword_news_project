@@ -65,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
         KeywordUser userData = (KeywordUser) intent.getSerializableExtra("userData");
         Log.i("my@@",this+userData.toString());
+        loginUser = userData;
+
 //        FirebaseApp.initializeApp(this);
 
         callGetNewsDataApi();
@@ -97,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
 //                });
 
     }
+
 
     private void callGetNewsDataApi() {
 
@@ -242,6 +245,8 @@ public class MainActivity extends AppCompatActivity {
             // XML 레이아웃 파일을 인플레이트하여 팝업 내용으로 설정
             builder.setView(getLayoutInflater().inflate(R.layout.popup_layout, null));
 
+            loadUserSetting();
+
             // AlertDialog 생성 및 팝업 표시
             AlertDialog dialog = builder.create();
             dialog.getWindow().setGravity(Gravity.BOTTOM);
@@ -262,19 +267,25 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void loadUserSetting(){
+        isSettingAlaramBtnClicked = !loginUser.isAlarmAllowed();
+        Log.i("my@@","load "+isSettingAlaramBtnClicked);
+    }
+
     private void setSubSettingBtn(AlertDialog dialog) {
         ImageButton settingBtn = dialog.findViewById(R.id.sub_alaram_btn);
         ImageButton settingBtn2 = dialog.findViewById(R.id.sub_clock_btn);
         ImageButton settingBtn4 = dialog.findViewById(R.id.sub_keyword_btn);
         ImageButton settingBtn5 = dialog.findViewById(R.id.sub_except_keyword_btn);
 
-
         settingBtn.setOnClickListener(v -> {
             switchalaramBtnImage(settingBtn);
+            callUpdateSetting(0);
         });
 
         settingBtn2.setOnClickListener(v -> {
             setalaramClock(settingBtn2);
+
         });
 
         settingBtn4.setOnClickListener(v ->{
@@ -286,9 +297,13 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
+
     private void switchalaramBtnImage(ImageButton settingBtn) {
-        settingBtn.setImageResource(isSettingAlaramBtnClicked ? R.drawable.icon_alarm : R.drawable.icon_noalarm);
         isSettingAlaramBtnClicked = !isSettingAlaramBtnClicked;
+        settingBtn.setImageResource(isSettingAlaramBtnClicked ? R.drawable.icon_alarm : R.drawable.icon_noalarm);
+        Log.i("my@@","switch "+isSettingAlaramBtnClicked);
+
     }
 
     private void setalaramClock(ImageButton settingBtn) {
@@ -396,5 +411,42 @@ public class MainActivity extends AppCompatActivity {
 
     private void addDataToExcludeList(String newData) {
         newExcludeKeywordAdapter.addItem(newData);
+    }
+
+    private void callUpdateSetting(int type){
+        Log.i("my@@","call "+isSettingAlaramBtnClicked);
+
+        switch (type){
+            //알림 세팅 업데이트
+            case 0:
+                String serverUrl = "http://49.247.40.141:80/update";
+
+                String jsonData = "{\"userToken\":\""+loginUser.getUserToken()+ "\"," +
+                        "\"updateType\":\"ALARM_ALLOWED\"," +
+                        "\"updateValue\":\""+!isSettingAlaramBtnClicked+
+                        "\"}";
+
+
+                PostApiTask task = new PostApiTask((responseCode,result) -> {
+                    if(responseCode==200){
+                        Toast.makeText(this,"알림 "+(!isSettingAlaramBtnClicked?"On":"Off"),Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                task.execute(serverUrl,jsonData);
+                break;
+            //시간 세팅 업데이트
+            case 1:
+                break;
+            //주기 세팅 업데이트
+            case 2:
+                break;
+            //포함키워드 업데이트
+            case 3:
+                break;
+            //제외키워드 업데이트
+            case 4:
+                break;
+        }
     }
 }
