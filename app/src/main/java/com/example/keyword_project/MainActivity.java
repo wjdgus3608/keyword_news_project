@@ -27,6 +27,7 @@ import com.example.keyword_project.adapter.NewExcludeKeywordAdapter;
 import com.example.keyword_project.adapter.NewIncludeKeywordAdapter;
 import com.example.keyword_project.adapter.NewsItemAdapter;
 import com.example.keyword_project.adapter.NewsKeywordAdapter;
+import com.example.keyword_project.domain.KeywordUser;
 import com.example.keyword_project.item.NewsItem;
 import com.example.keyword_project.item.NewsKeyword;
 //import com.google.android.gms.tasks.OnCompleteListener;
@@ -38,6 +39,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    private KeywordUser loginUser = null;
     private NewsItemAdapter newsItemAdapter;
     private final List<NewsItem> newsData = new ArrayList<>();
     private final List<NewsItem> newsItemList = new ArrayList<>();
@@ -58,7 +61,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        Intent intent = getIntent();
+        KeywordUser userData = (KeywordUser) intent.getSerializableExtra("userData");
+        Log.i("my@@",this+userData.toString());
 //        FirebaseApp.initializeApp(this);
 
         callGetNewsDataApi();
