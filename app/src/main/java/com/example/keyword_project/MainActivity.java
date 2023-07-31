@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -221,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
         ImageButton settingBtn = findViewById(R.id.main_setting_btn);
 
         settingBtn.setOnClickListener(v -> {
-            switchSettingBtnImage(settingBtn);
+//            switchSettingBtnImage(settingBtn);
             if (!isPopupShown) {
                 openPopUp();
             }
@@ -244,6 +245,9 @@ public class MainActivity extends AppCompatActivity {
             // AlertDialog 생성 및 팝업 표시
             AlertDialog dialog = builder.create();
             dialog.getWindow().setGravity(Gravity.BOTTOM);
+            WindowManager.LayoutParams layoutParams = dialog.getWindow().getAttributes();
+            layoutParams.y = 150;
+            dialog.getWindow().setAttributes(layoutParams);
             dialog.show();
 
             // 팝업이 띄워져 있다고 표시
