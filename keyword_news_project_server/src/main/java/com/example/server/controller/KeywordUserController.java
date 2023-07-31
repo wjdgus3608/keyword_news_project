@@ -39,7 +39,7 @@ public class KeywordUserController {
         boolean isLogOut = keywordUserService.logOut(data.get("userToken"));
         if(!isLogOut)
             return ResponseEntity.badRequest().build();
-        return ResponseEntity.ok(isLogOut);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/update")

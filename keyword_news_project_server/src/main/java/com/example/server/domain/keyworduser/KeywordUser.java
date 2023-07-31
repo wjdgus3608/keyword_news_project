@@ -27,6 +27,8 @@ public class KeywordUser {
     private String fetchTime;
     @ColumnDefault("'5'")
     private String fetchInterval;
+    @ColumnDefault("false")
+    private boolean isActive;
 
     public static KeywordUser generateUser(){
         return KeywordUser.builder()

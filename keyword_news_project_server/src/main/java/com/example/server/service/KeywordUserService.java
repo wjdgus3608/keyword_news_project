@@ -23,10 +23,14 @@ public class KeywordUserService {
     }
 
     public Optional<KeywordUser> logIn(String userToken){
-        return findUserById(userToken);
+        Optional<KeywordUser> optional = findUserById(userToken);
+        optional.ifPresent(keywordUser -> keywordUser.setActive(true));
+        return optional;
     }
 
     public boolean logOut(String userToken){
+        Optional<KeywordUser> optional = findUserById(userToken);
+        optional.ifPresent(keywordUser -> keywordUser.setActive(false));
         return true;
     }
 
