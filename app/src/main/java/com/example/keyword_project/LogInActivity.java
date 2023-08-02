@@ -10,6 +10,12 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.keyword_project.domain.KeywordUser;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
@@ -36,9 +42,10 @@ public class LogInActivity extends AppCompatActivity {
         });
     }
 
-    private void moveToMainPage(String userData){
+    private void moveToMainPage(KeywordUser user){
         Intent intent = new Intent(this,MainActivity.class);
-        intent.putExtra("userData",userData);
+        intent.putExtra("userData",user);
+        Log.i("my@@",this+user.toString());
         startActivity(intent);
     }
 
@@ -66,7 +73,7 @@ public class LogInActivity extends AppCompatActivity {
 
         PostApiTask task = new PostApiTask((responseCode,result) -> {
             if(responseCode==200){
-                moveToMainPage(result);
+                moveToMainPage(parseUserData(result));
             }
             else{
                 Toast.makeText(this,"토큰값이 유효하지 않습니다.",Toast.LENGTH_SHORT).show();
@@ -76,5 +83,42 @@ public class LogInActivity extends AppCompatActivity {
         task.execute(serverUrl,jsonData);
 
     }
+
+    private KeywordUser parseUserData(String response){
+        // Gson을 사용하여 JSON 파싱
+        Gson gson = new Gson();
+        JsonObject jsonObject = gson.fromJson(response, JsonObject.class);
+
+
+        // 파싱한 데이터 사용 예시
+        KeywordUser user = new KeywordUser();
+
+        JsonElement e1 = jsonObject.get("userToken");
+        JsonElement e2 = jsonObject.get("active");
+        JsonElement e3 = jsonObject.get("alarmAllowed");
+        JsonElement e4 = jsonObject.get("fcmToken");
+        JsonElement e5 = jsonObject.get("vip");
+        JsonElement e6 = jsonObject.get("fetchTime");
+        JsonElement e7 = jsonObject.get("fetchInterval");
+
+        String userToken = e1.isJsonNull() ? null : e1.getAsString();
+        boolean isActive = e2.isJsonNull() ? null : e2.getAsBoolean();
+        boolean isAlarmAllowed = e3.isJsonNull() ? null : e3.getAsBoolean();
+        String fcmToken =e4.isJsonNull() ? null : e4.getAsString();
+        boolean isVip =e5.isJsonNull() ? null : e5.getAsBoolean();
+        String fetchTime = e6.isJsonNull() ? null : e6.getAsString();
+        String fetchInterval = e7.isJsonNull() ? null : e7.getAsString();
+
+        user.setUserToken(userToken);
+        user.setActive(isActive);
+        user.setAlarmAllowed(isAlarmAllowed);
+        user.setFcmToken(fcmToken);
+        user.setVip(isVip);
+        user.setFetchTime(fetchTime);
+        user.setFetchInterval(fetchInterval);
+
+        return user;
+    }
+
 
 }

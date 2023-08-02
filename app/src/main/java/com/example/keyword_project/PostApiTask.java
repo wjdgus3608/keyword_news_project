@@ -22,7 +22,7 @@ public class PostApiTask extends AsyncTask<String, Void, String> {
     protected String doInBackground(String... params) {
         String urlString = params[0];
         String postData = params[1];
-        String result = "";
+        String result = null;
 
         OkHttpClient client = new OkHttpClient();
 
@@ -40,11 +40,11 @@ public class PostApiTask extends AsyncTask<String, Void, String> {
             // 요청을 보내고 응답을 받습니다.
             Response response = client.newCall(request).execute();
             responseCode = response.code();
-            result = response.body().toString();
+            result = response.body().string();
             // 응답 결과를 문자열로 변환하여 반환합니다.
         } catch (IOException e) {
             e.printStackTrace();
-            result = "Error: " + e.getMessage();
+            result = null;
         }
 
         return result;
