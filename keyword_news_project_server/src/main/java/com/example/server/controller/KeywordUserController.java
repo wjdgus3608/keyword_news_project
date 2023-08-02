@@ -26,7 +26,7 @@ public class KeywordUserController {
     }
 
     @PostMapping("/logIn")
-    public ResponseEntity<?> logIn(@RequestBody Map<String,String> data){
+    public ResponseEntity<KeywordUser> logIn(@RequestBody Map<String,String> data){
         log.info(data.get("userToken"));
         Optional<KeywordUser> optional = keywordUserService.logIn(data.get("userToken"));
         if(optional.isEmpty())
