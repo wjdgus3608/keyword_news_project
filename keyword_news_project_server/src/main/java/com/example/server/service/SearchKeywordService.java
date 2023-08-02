@@ -4,6 +4,7 @@ import com.example.server.domain.searchkeyword.SearchKeyword;
 import com.example.server.domain.searchkeyword.dto.AddKeywordDTO;
 import com.example.server.domain.searchkeyword.dto.FindKeywordDTO;
 import com.example.server.repository.SearchKeywordRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class SearchKeywordService {
     private final SearchKeywordRepository searchKeywordRepository;
 

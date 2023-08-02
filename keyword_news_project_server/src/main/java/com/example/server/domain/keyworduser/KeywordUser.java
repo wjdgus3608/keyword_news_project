@@ -22,7 +22,7 @@ public class KeywordUser {
     @Column
     private boolean isVip;
     @Column
-    private boolean isAlarmAllowed = true;
+    private boolean isAlarmAllowed;
     @Column
     private String fetchTime;
     @Column
@@ -34,6 +34,7 @@ public class KeywordUser {
     public void prePersist() {
         this.fetchTime = this.fetchTime == null ? "08001800" : this.fetchTime;
         this.fetchInterval = this.fetchInterval == null ? "5" : this.fetchInterval;
+        this.isAlarmAllowed = true;
     }
 
     public static KeywordUser generateUser(){

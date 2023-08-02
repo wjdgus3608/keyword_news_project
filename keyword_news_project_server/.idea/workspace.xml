@@ -6,8 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="3d47abef-a7d5-4142-b361-ade6088279e1" name="Changes" comment="Changes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/server/controller/KeywordUserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/server/controller/KeywordUserController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/server/domain/keyworduser/KeywordUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/server/domain/keyworduser/KeywordUser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/server/service/KeywordUserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/server/service/KeywordUserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/server/service/SearchKeywordService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/server/service/SearchKeywordService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,7 +92,7 @@
       <recent name="com.example.server.repository" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.ServerApplication">
+  <component name="RunManager" selected="Gradle.keyword_news_project_server [bootJar]">
     <configuration name="ServerApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.example.server.ServerApplication" />
       <module name="server.main" />
@@ -127,8 +129,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.ServerApplication" />
         <item itemvalue="Gradle.keyword_news_project_server [bootJar]" />
+        <item itemvalue="Application.ServerApplication" />
       </list>
     </recent_temporary>
   </component>
