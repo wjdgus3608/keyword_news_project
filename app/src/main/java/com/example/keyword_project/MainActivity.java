@@ -56,8 +56,10 @@ public class MainActivity extends AppCompatActivity {
 
     private NewIncludeKeywordAdapter newIncludeKeywordAdapter;
     private NewExcludeKeywordAdapter newExcludeKeywordAdapter;
+    private NewExcludeKeywordAdapter newMainKeywordAdapter;
     private List<String> keywordIncludeDataList = new ArrayList<>();
     private List<String> keywordExcludeDataList = new ArrayList<>();
+    private List<String> keywordMainDataList = new ArrayList<>();
     private boolean isPopupShown = false;
     private int setCycleTimeIndex = 0;
 
@@ -122,9 +124,14 @@ public class MainActivity extends AppCompatActivity {
                 GlobalData.clickedKeyword = dataList.get(pos).getKeyword();
                 changeClickedKeyword(adapter, dataList, pos);
                 renderNewsItem();
+
+                if (GlobalData.clickedKeyword == "+"){
+                    setMainkeyWord(dataList);
+                }
             } else {
                 showAddKeywordPopup();
             }
+
         });
     }
 
@@ -161,14 +168,6 @@ public class MainActivity extends AppCompatActivity {
         list.add(new NewsKeyword("특징주", false));
         list.add(new NewsKeyword("김하성", false));
         list.add(new NewsKeyword("첼시", false));
-        list.add(new NewsKeyword("LG", false));
-        list.add(new NewsKeyword("LG", false));
-        list.add(new NewsKeyword("LG", false));
-        list.add(new NewsKeyword("LG", false));
-        list.add(new NewsKeyword("LG", false));
-        list.add(new NewsKeyword("LG", false));
-        list.add(new NewsKeyword("LG", false));
-        list.add(new NewsKeyword("LG", false));
         list.add(new NewsKeyword("LG", false));
         list.add(new NewsKeyword("LG", false));
         list.add(new NewsKeyword("LG", false));
@@ -417,9 +416,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        dialog.setOnDismissListener(dialogInterface -> {
-            newIncludeKeywordAdapter.allDelete();
-        });
     }
 
     private void addDataToList(String newData) {
@@ -464,14 +460,54 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        dialog.setOnDismissListener(dialogInterface -> {
-            newExcludeKeywordAdapter.allDelete();
-        });
     }
 
     private void addDataToExcludeList(String newData) {
         newExcludeKeywordAdapter.addItem(newData);
     }
 
+
+    private void setMainkeyWord(List<NewsKeyword> dataList) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.keyword_main, null);
+        builder.setView(view);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        RecyclerView recyclerView = view.findViewById(R.id.keyword_main_recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        // 기존의 어댑터를 사용하도록 수정
+        if (newMainKeywordAdapter == null){
+            newMainKeywordAdapter = new NewExcludeKeywordAdapter(keywordMainDataList);}
+
+        recyclerView.setAdapter(newMainKeywordAdapter);
+
+        //기존데이터 있으면 넣기.
+        for (int i = 0 ; i < dataList.size() ; i++){
+            newMainKeywordAdapter.addItem(dataList.get(i).getKeyword());
+        }
+
+        // 뷰에서 addKeywordButton을 찾음
+        Button addKeywordButton = view.findViewById(R.id.mainAddKeywordButton);
+        EditText keywordEditText = view.findViewById(R.id.mainKeywordEditText);
+
+        addKeywordButton.setOnClickListener(v -> {
+            // 버튼 클릭시 dataList에 값 추가하고 RecyclerView에 업데이트
+            String newKeyword = keywordEditText.getText().toString().trim();
+            if (!newKeyword.isEmpty()) {
+                addDataToMainList(newKeyword);
+                Map<String,Object> map = new HashMap<>();
+                ApiCallClient.callUpdateSetting(this,5,GlobalData.loginUser,map);
+                keywordEditText.setText("");
+            }
+        });
+    }
+
+    private void addDataToMainList(String newData) {
+        newMainKeywordAdapter.addItem(newData);
+    }
 
 }
