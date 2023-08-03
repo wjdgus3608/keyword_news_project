@@ -58,7 +58,7 @@ public class NewExcludeKeywordAdapter extends RecyclerView.Adapter<NewExcludeKey
                     Map<String,Object> map = new HashMap<>();
                     map.put("keyword", GlobalData.clickedKeyword);
                     map.put("removeExcludeKeyword",data.get(position));
-                    ApiCallClient.callUpdateSetting(GlobalData.mainContext,6, GlobalData.loginUser,map);
+                    ApiCallClient.callUpdateSetting(GlobalData.mainContext,6,map);
                     removeItem(position);
                 }
             });
