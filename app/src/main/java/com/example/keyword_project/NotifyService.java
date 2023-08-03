@@ -23,7 +23,9 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.normal.TedPermission;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class NotifyService extends FirebaseMessagingService {
 
@@ -116,6 +118,8 @@ public class NotifyService extends FirebaseMessagingService {
 
 
     private void sendRegistrationToServer(String token){
-
+        Map<String,Object> map = new HashMap<>();
+        map.put("fcmToken",token);
+        ApiCallClient.callUpdateSetting(GlobalData.mainContext,-1,map);
     }
 }

@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,7 +28,13 @@ public class KeywordUserService {
 
     public Optional<KeywordUser> logIn(String userToken){
         Optional<KeywordUser> optional = findUserById(userToken);
-        optional.ifPresent(keywordUser -> keywordUser.setActive(true));
+        optional.ifPresent(keywordUser -> {
+            List<KeywordUser> byFcmToken = keywordUserRepository.findKeywordUserByFcmToken(keywordUser.getFcmToken());
+            for(KeywordUser user:byFcmToken){
+                user.setActive(false);
+            }
+            keywordUser.setActive(true);
+        });
         return optional;
     }
 

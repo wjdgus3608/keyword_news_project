@@ -12,13 +12,13 @@ import com.google.gson.JsonParser;
 import java.util.Map;
 
 public class ApiCallClient {
-    public static void callUpdateSetting(Context context, int type, KeywordUser loginUser, Map<String,Object> data) {
+    public static void callUpdateSetting(Context context, int type, Map<String,Object> data) {
         String serverUrl = "http://49.247.40.141:80/update";
         String jsonData = "";
         PostApiTask task;
         switch (type) {
             //VIP 여부 업데이트(추후 수정)
-           /* case -1:
+           /* case -2:
                 jsonData = "{\"userToken\":\""+loginUser.getUserToken()+ "\"," +
                         "\"updateType\":\"IS_VIP\"," +
                         "\"updateValue\":\""+!isSettingAlaramBtnClicked+
@@ -31,10 +31,25 @@ public class ApiCallClient {
                 });
                 task.execute(serverUrl,jsonData);
                 break;*/
+            //FCM 토큰 업데이트
+             case -1:
+
+                jsonData = "{\"userToken\":\""+GlobalData.loginUser.getUserToken()+ "\"," +
+                        "\"updateType\":\"FCM_TOKEN\"," +
+                        "\"updateValue\":\""+(String)data.get("fcmToken")+
+                        "\"}";
+
+                task = new PostApiTask((responseCode,result) -> {
+                    if(responseCode==200){
+                        Toast.makeText(context,"FCM 토큰 업데이트 ",Toast.LENGTH_SHORT).show();
+                    }
+                });
+                task.execute(serverUrl,jsonData);
+                break;
             //알림 세팅 업데이트
             case 0:
                 boolean isSettingAlaramBtnClicked = (boolean)data.get("isSettingAlaramBtnClicked");
-                jsonData = "{\"userToken\":\"" + loginUser.getUserToken() + "\"," +
+                jsonData = "{\"userToken\":\"" + GlobalData.loginUser.getUserToken() + "\"," +
                         "\"updateType\":\"ALARM_ALLOWED\"," +
                         "\"updateValue\":\"" + !isSettingAlaramBtnClicked +
                         "\"}";
@@ -48,7 +63,7 @@ public class ApiCallClient {
                 break;
             //시간 세팅 업데이트
             case 1:
-/*                jsonData = "{\"userToken\":\""+loginUser.getUserToken()+ "\"," +
+/*                jsonData = "{\"userToken\":\""+GlobalData.loginUser.getUserToken()+ "\"," +
                         "\"updateType\":\"FETCH_TIME\"," +
                         "\"updateValue\":\""+!isSettingAlaramBtnClicked+
                         "\"}";
@@ -62,7 +77,7 @@ public class ApiCallClient {
                 break;
             //주기 세팅 업데이트
             case 2:
-              /*  jsonData = "{\"userToken\":\""+loginUser.getUserToken()+ "\"," +
+              /*  jsonData = "{\"userToken\":\""+GlobalData.loginUser.getUserToken()+ "\"," +
                         "\"updateType\":\"FETCH_INTERVAL\"," +
                         "\"updateValue\":\""+!isSettingAlaramBtnClicked+
                         "\"}";
@@ -77,7 +92,7 @@ public class ApiCallClient {
             //포함키워드 추가
             case 3:
                 jsonData = "{\"keyword\":\"" + data.get("keyword") + "\"," +
-                        "\"ownerId\":\"" + loginUser.getUserToken() + "\"," +
+                        "\"ownerId\":\"" + GlobalData.loginUser.getUserToken() + "\"," +
                         "\"addContainKeyword\":\"" + data.get("addContainKeyword") +
                         "\"}";
 
@@ -91,7 +106,7 @@ public class ApiCallClient {
             //포함키워드 삭제
             case 4:
                 jsonData = "{\"keyword\":\"" + data.get("keyword") + "\"," +
-                        "\"ownerId\":\"" + loginUser.getUserToken() + "\"," +
+                        "\"ownerId\":\"" + GlobalData.loginUser.getUserToken() + "\"," +
                         "\"removeContainKeyword\":\"" + data.get("removeContainKeyword") +
                         "\"}";
 
@@ -105,7 +120,7 @@ public class ApiCallClient {
             //제외키워드 추가
             case 5:
                 jsonData = "{\"keyword\":\"" + data.get("keyword") + "\"," +
-                        "\"ownerId\":\"" + loginUser.getUserToken() + "\"," +
+                        "\"ownerId\":\"" + GlobalData.loginUser.getUserToken() + "\"," +
                         "\"addExcludeKeyword\":\"" + data.get("addExcludeKeyword") +
                         "\"}";
 
@@ -119,7 +134,7 @@ public class ApiCallClient {
             //제외키워드 삭제
             case 6:
                 jsonData = "{\"keyword\":\"" + data.get("keyword") + "\"," +
-                        "\"ownerId\":\"" + loginUser.getUserToken() + "\"," +
+                        "\"ownerId\":\"" + GlobalData.loginUser.getUserToken() + "\"," +
                         "\"removeExcludeKeyword\":\"" + data.get("removeExcludeKeyword") +
                         "\"}";
 
@@ -130,6 +145,7 @@ public class ApiCallClient {
                 });
                 task.execute("http://49.247.40.141:80/keyword/removeExcludeKeyword", jsonData);
                 break;
+
         }
     }
 }
