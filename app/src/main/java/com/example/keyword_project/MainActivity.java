@@ -40,6 +40,8 @@ import com.google.firebase.messaging.FirebaseMessaging;
 //import com.google.firebase.FirebaseApp;
 //import com.google.firebase.messaging.FirebaseMessaging;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -60,9 +62,9 @@ public class MainActivity extends AppCompatActivity {
     private NewExcludeKeywordAdapter newExcludeKeywordAdapter;
     private List<String> keywordIncludeDataList = new ArrayList<>();
     private List<String> keywordExcludeDataList = new ArrayList<>();
-
-
     private boolean isPopupShown = false;
+    private int setCycleTimeIndex = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,7 +74,9 @@ public class MainActivity extends AppCompatActivity {
         Log.i("my@@",this+userData.toString());
         GlobalData.loginUser = userData;
         GlobalData.mainContext = this;
+
         FirebaseApp.initializeApp(this);
+
 
         callGetNewsDataApi();
 
@@ -255,7 +259,6 @@ public class MainActivity extends AppCompatActivity {
             // XML 레이아웃 파일을 인플레이트하여 팝업 내용으로 설정
             builder.setView(getLayoutInflater().inflate(R.layout.popup_layout, null));
 
-
             // AlertDialog 생성 및 팝업 표시
             AlertDialog dialog = builder.create();
             dialog.getWindow().setGravity(Gravity.BOTTOM);
@@ -290,19 +293,31 @@ public class MainActivity extends AppCompatActivity {
     private void setSubSettingBtn(AlertDialog dialog) {
         ImageButton settingBtn = dialog.findViewById(R.id.sub_alaram_btn);
         ImageButton settingBtn2 = dialog.findViewById(R.id.sub_clock_btn);
+        ImageButton settingBtn3 = dialog.findViewById(R.id.sub_cycle_btn);
         ImageButton settingBtn4 = dialog.findViewById(R.id.sub_keyword_btn);
         ImageButton settingBtn5 = dialog.findViewById(R.id.sub_except_keyword_btn);
 
+        TextView textView1 =  dialog.findViewById((R.id.sub_alaram_text2));
+        TextView textView2 =  dialog.findViewById((R.id.sub_clock_text2));
+        TextView textView24=  dialog.findViewById((R.id.sub_clock_text4));
+
+        TextView textView3 =  dialog.findViewById((R.id.sub_cycle_text2));
+        TextView textView4 =  dialog.findViewById((R.id.sub_keyword_text2));
+        TextView textView5 =  dialog.findViewById((R.id.sub_except_keyword_text2));
+
         settingBtn.setOnClickListener(v -> {
-            switchalaramBtnImage(settingBtn);
+            switchalaramBtnImage(settingBtn,textView1);
             HashMap<String,Object> map = new HashMap<>();
             map.put("isSettingAlaramBtnClicked",isSettingAlaramBtnClicked);
-            ApiCallClient.callUpdateSetting(this, 0, GlobalData.loginUser, map);
+            ApiCallClient.callUpdateSetting(this, 0, map);
         });
 
         settingBtn2.setOnClickListener(v -> {
-            setalaramClock(settingBtn2);
+            setalaramClock(settingBtn2, textView2, textView24);
+        });
 
+        settingBtn3.setOnClickListener(v -> {
+            setCycleTime(settingBtn3, textView3);
         });
 
         settingBtn4.setOnClickListener(v ->{
@@ -314,16 +329,26 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
-
-    private void switchalaramBtnImage(ImageButton settingBtn) {
-        isSettingAlaramBtnClicked = !isSettingAlaramBtnClicked;
-        settingBtn.setImageResource(!isSettingAlaramBtnClicked ? R.drawable.icon_alarm : R.drawable.icon_noalarm);
-        Log.i("my@@","switch "+isSettingAlaramBtnClicked);
-
+    private void setCycleTime(ImageButton settingBtn, TextView textView){
+        setCycleTimeIndex++;
+        if (setCycleTimeIndex == 5) setCycleTimeIndex = 0;
+        String text = "";
+        switch(setCycleTimeIndex){
+            case 0: text = "실시간";break;
+            case 1: text = "5분";break;
+            case 2: text = "30분";break;
+            case 3: text = "1시간";break;
+            case 4: text = "2시간";break;
+        }
+        textView.setText(text);
     }
 
-    private void setalaramClock(ImageButton settingBtn) {
+    private void switchalaramBtnImage(ImageButton settingBtn, TextView textView) {
+        isSettingAlaramBtnClicked = !isSettingAlaramBtnClicked;
+        settingBtn.setImageResource(!isSettingAlaramBtnClicked ? R.drawable.icon_alarm : R.drawable.icon_noalarm);
+        textView.setText(isSettingAlaramBtnClicked ? "OFF" : "ON");
+    }
+    private void setalaramClock(ImageButton settingBtn, TextView clockText2, TextView clockText4) {
         // 팝업을 띄우기 위한 AlertDialog.Builder 생성
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -339,6 +364,26 @@ public class MainActivity extends AppCompatActivity {
         TimePicker timePicker_end = dialogView.findViewById(R.id.timePickerEnd);
         timePicker_start.setIs24HourView(true);
         timePicker_end.setIs24HourView(true);
+
+
+        timePicker_start.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+            @Override
+            public void onTimeChanged(TimePicker timePicker, int hour, int minute) {
+                clockText2.setText(hour+":"+minute);
+            }
+        });
+
+        timePicker_end.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+            @Override
+            public void onTimeChanged(TimePicker timePicker, int hour, int minute) {
+                clockText4.setText(hour+":"+minute);
+            }
+        });
+
+        Button alarmChoiceButton = dialogView.findViewById(R.id.alaramChoice);
+        alarmChoiceButton.setOnClickListener(v -> {
+            dialog.dismiss();
+        });
 
         // 팝업 표시
         dialog.getWindow().setGravity(Gravity.CENTER_HORIZONTAL);
