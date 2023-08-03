@@ -3,6 +3,7 @@ package com.example.server.domain.keyworduser;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import java.util.UUID;
@@ -16,19 +17,25 @@ import java.util.UUID;
 public class KeywordUser {
     @Id
     private String userToken;
-//    @Column(nullable = false)
     @Column
     private String fcmToken;
-    @ColumnDefault("false")
+    @Column
     private boolean isVip;
-    @ColumnDefault("true")
+    @Column
     private boolean isAlarmAllowed;
-    @ColumnDefault("'08001800'")
+    @Column
     private String fetchTime;
-    @ColumnDefault("'5'")
+    @Column
     private String fetchInterval;
-    @ColumnDefault("false")
+    @Column
     private boolean isActive;
+
+    @PrePersist
+    public void prePersist() {
+        this.fetchTime = this.fetchTime == null ? "08001800" : this.fetchTime;
+        this.fetchInterval = this.fetchInterval == null ? "5" : this.fetchInterval;
+        this.isAlarmAllowed = true;
+    }
 
     public static KeywordUser generateUser(){
         return KeywordUser.builder()

@@ -9,9 +9,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.keyword_project.ApiCallClient;
+import com.example.keyword_project.GlobalData;
 import com.example.keyword_project.R;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 public class NewExcludeKeywordAdapter extends RecyclerView.Adapter<NewExcludeKeywordAdapter.ViewHolder> {
     private List<String> data;
 
@@ -50,6 +55,10 @@ public class NewExcludeKeywordAdapter extends RecyclerView.Adapter<NewExcludeKey
             deleteButton.setOnClickListener(v -> {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
+                    Map<String,Object> map = new HashMap<>();
+                    map.put("keyword", GlobalData.clickedKeyword);
+                    map.put("removeExcludeKeyword",data.get(position));
+                    ApiCallClient.callUpdateSetting(GlobalData.mainContext,6, GlobalData.loginUser,map);
                     removeItem(position);
                 }
             });

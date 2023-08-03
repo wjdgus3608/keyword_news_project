@@ -39,11 +39,12 @@ import com.example.keyword_project.item.NewsKeyword;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    private KeywordUser loginUser = null;
     private NewsItemAdapter newsItemAdapter;
     private final List<NewsItem> newsData = new ArrayList<>();
     private final List<NewsItem> newsItemList = new ArrayList<>();
@@ -67,8 +68,8 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
         KeywordUser userData = (KeywordUser) intent.getSerializableExtra("userData");
         Log.i("my@@",this+userData.toString());
-        loginUser = userData;
-
+        GlobalData.loginUser = userData;
+        GlobalData.mainContext = this;
 //        FirebaseApp.initializeApp(this);
 
         callGetNewsDataApi();
@@ -118,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
         adapter.setOnItemClickListener((v, pos) -> {
             if (pos < dataList.size() - 1) {
+                GlobalData.clickedKeyword = dataList.get(pos).getKeyword();
                 changeClickedKeyword(adapter, dataList, pos);
                 renderNewsItem();
             } else {
@@ -257,6 +259,9 @@ public class MainActivity extends AppCompatActivity {
             dialog.getWindow().setAttributes(layoutParams);
             dialog.show();
 
+            loadUserSetting(dialog);
+
+
             // 팝업이 띄워져 있다고 표시
             isPopupShown = true;
 
@@ -269,8 +274,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void loadUserSetting(){
-        isSettingAlaramBtnClicked = !loginUser.isAlarmAllowed();
+    private void loadUserSetting(AlertDialog dialog){
+        isSettingAlaramBtnClicked = !GlobalData.loginUser.isAlarmAllowed();
+
+        ImageButton settingBtn = dialog.findViewById(R.id.sub_alaram_btn);
+        settingBtn.setImageResource(!isSettingAlaramBtnClicked ? R.drawable.icon_alarm : R.drawable.icon_noalarm);
         Log.i("my@@","load "+isSettingAlaramBtnClicked);
     }
 
@@ -288,8 +296,10 @@ public class MainActivity extends AppCompatActivity {
         TextView textView5 =  dialog.findViewById((R.id.sub_except_keyword_text2));
 
         settingBtn.setOnClickListener(v -> {
-            switchalaramBtnImage(settingBtn, textView1);
-            callUpdateSetting(0);
+            switchalaramBtnImage(settingBtn);
+            HashMap<String,Object> map = new HashMap<>();
+            map.put("isSettingAlaramBtnClicked",isSettingAlaramBtnClicked);
+            ApiCallClient.callUpdateSetting(this, 0, GlobalData.loginUser, map);
         });
 
         settingBtn2.setOnClickListener(v -> {
@@ -325,6 +335,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void switchalaramBtnImage(ImageButton settingBtn, TextView textView) {
         isSettingAlaramBtnClicked = !isSettingAlaramBtnClicked;
+        settingBtn.setImageResource(!isSettingAlaramBtnClicked ? R.drawable.icon_alarm : R.drawable.icon_noalarm);
+        Log.i("my@@","switch "+isSettingAlaramBtnClicked);
+
         settingBtn.setImageResource(isSettingAlaramBtnClicked ? R.drawable.icon_alarm : R.drawable.icon_noalarm);
         textView.setText(isSettingAlaramBtnClicked ? "ON" : "OFF");
     }
@@ -379,6 +392,10 @@ public class MainActivity extends AppCompatActivity {
             String newKeyword = keywordEditText.getText().toString().trim();
             if (!newKeyword.isEmpty()) {
                 addDataToList(newKeyword);
+                Map<String,Object> map = new HashMap<>();
+                map.put("keyword",GlobalData.clickedKeyword);
+                map.put("addContainKeyword",newKeyword);
+                ApiCallClient.callUpdateSetting(this,3,GlobalData.loginUser,map);
                 keywordEditText.setText("");
             }
         });
@@ -387,6 +404,7 @@ public class MainActivity extends AppCompatActivity {
             newIncludeKeywordAdapter.allDelete();
         });
     }
+
     private void addDataToList(String newData) {
         newIncludeKeywordAdapter.addItem(newData);
     }
@@ -421,6 +439,10 @@ public class MainActivity extends AppCompatActivity {
             String newKeyword = keywordEditText.getText().toString().trim();
             if (!newKeyword.isEmpty()) {
                 addDataToExcludeList(newKeyword);
+                Map<String,Object> map = new HashMap<>();
+                map.put("keyword",GlobalData.clickedKeyword);
+                map.put("addExcludeKeyword",newKeyword);
+                ApiCallClient.callUpdateSetting(this,5,GlobalData.loginUser,map);
                 keywordEditText.setText("");
             }
         });
@@ -434,40 +456,5 @@ public class MainActivity extends AppCompatActivity {
         newExcludeKeywordAdapter.addItem(newData);
     }
 
-    private void callUpdateSetting(int type){
-        Log.i("my@@","call "+isSettingAlaramBtnClicked);
 
-        switch (type){
-            //알림 세팅 업데이트
-            case 0:
-                String serverUrl = "http://49.247.40.141:80/update";
-
-                String jsonData = "{\"userToken\":\""+loginUser.getUserToken()+ "\"," +
-                        "\"updateType\":\"ALARM_ALLOWED\"," +
-                        "\"updateValue\":\""+!isSettingAlaramBtnClicked+
-                        "\"}";
-
-
-                PostApiTask task = new PostApiTask((responseCode,result) -> {
-                    if(responseCode==200){
-                        Toast.makeText(this,"알림 "+(!isSettingAlaramBtnClicked?"On":"Off"),Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-                task.execute(serverUrl,jsonData);
-                break;
-            //시간 세팅 업데이트
-            case 1:
-                break;
-            //주기 세팅 업데이트
-            case 2:
-                break;
-            //포함키워드 업데이트
-            case 3:
-                break;
-            //제외키워드 업데이트
-            case 4:
-                break;
-        }
-    }
 }
