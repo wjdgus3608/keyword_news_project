@@ -31,6 +31,10 @@ import com.example.keyword_project.adapter.NewsKeywordAdapter;
 import com.example.keyword_project.domain.KeywordUser;
 import com.example.keyword_project.item.NewsItem;
 import com.example.keyword_project.item.NewsKeyword;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.messaging.FirebaseMessaging;
 //import com.google.android.gms.tasks.OnCompleteListener;
 //import com.google.android.gms.tasks.Task;
 //import com.google.firebase.FirebaseApp;
@@ -68,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         Log.i("my@@",this+userData.toString());
         GlobalData.loginUser = userData;
         GlobalData.mainContext = this;
-//        FirebaseApp.initializeApp(this);
+        FirebaseApp.initializeApp(this);
 
         callGetNewsDataApi();
 
@@ -80,24 +84,28 @@ public class MainActivity extends AppCompatActivity {
         startService(serviceIntent);
 
 
-//        FirebaseMessaging.getInstance().getToken()
-//                .addOnCompleteListener(new OnCompleteListener<String>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<String> task) {
-//                        if (!task.isSuccessful()) {
-//                            Log.w("my@@", "Fetching FCM registration token failed", task.getException());
-//                            return;
-//                        }
-//
-//                        // Get new FCM registration token
-//                        String token = (String)task.getResult();
-//
-//                        // Log and toast
-//                        String msg = getString(R.string.msg_token_fmt, token);
-//                        Log.d("my@@", token);
-//                        Toast.makeText(MainActivity.this, token, Toast.LENGTH_SHORT).show();
-//                    }
-//                });
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.i("my@@", "Fetching FCM registration token failed", task.getException());
+                            return;
+                        }
+
+                        // Get new FCM registration token
+                        String token = (String)task.getResult();
+
+                        // Log and toast
+                        String msg = getString(R.string.msg_token_fmt, token);
+                        Map<String,Object> map = new HashMap<>();
+                        map.put("fcmToken",token);
+                        ApiCallClient.callUpdateSetting(GlobalData.mainContext,-1,map);
+                        Log.i("my@@", token);
+                    }
+
+                    
+                });
 
     }
 
@@ -369,7 +377,7 @@ public class MainActivity extends AppCompatActivity {
                 Map<String,Object> map = new HashMap<>();
                 map.put("keyword",GlobalData.clickedKeyword);
                 map.put("addContainKeyword",newKeyword);
-                ApiCallClient.callUpdateSetting(this,3,GlobalData.loginUser,map);
+                ApiCallClient.callUpdateSetting(this,3,map);
                 keywordEditText.setText("");
             }
         });
@@ -416,7 +424,7 @@ public class MainActivity extends AppCompatActivity {
                 Map<String,Object> map = new HashMap<>();
                 map.put("keyword",GlobalData.clickedKeyword);
                 map.put("addExcludeKeyword",newKeyword);
-                ApiCallClient.callUpdateSetting(this,5,GlobalData.loginUser,map);
+                ApiCallClient.callUpdateSetting(this,5,map);
                 keywordEditText.setText("");
             }
         });
