@@ -284,8 +284,9 @@ public class MainActivity extends AppCompatActivity {
         TextView clockText2 = dialog.findViewById((R.id.sub_clock_text2));
         TextView clockText4 = dialog.findViewById((R.id.sub_clock_text4));
         String time = GlobalData.loginUser.getFetchTime();
-        clockText2.setText(time.substring(0,2)+":"+time.substring(2,2));
-        clockText4.setText(time.substring(4,2)+":"+time.substring(6,2));
+        Log.i("my@@",time);
+        clockText2.setText(time.substring(0,2)+":"+time.substring(2,4));
+        clockText4.setText(time.substring(4,6)+":"+time.substring(6,8));
         //주기 정보 로드
         String cycleTime = GlobalData.loginUser.getFetchInterval();
         TextView textView3 =  dialog.findViewById((R.id.sub_cycle_text2));
@@ -293,17 +294,22 @@ public class MainActivity extends AppCompatActivity {
         switch (cycleTime){
             case "0":
                 cycleText = "실시간";
+                setCycleTimeIndex = 0;
                 break;
             case "5":
                 cycleText = "5분";
+                setCycleTimeIndex = 1;
                 break;
             case "30":
                 cycleText = "30분";
+                setCycleTimeIndex = 2;
                 break;
             case "60":
                 cycleText = "1시간";
+                setCycleTimeIndex = 3;
                 break;
             case "120":
+                setCycleTimeIndex = 4;
                 cycleText = "2시간";
                 break;
         }
