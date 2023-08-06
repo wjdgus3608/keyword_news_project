@@ -434,6 +434,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // 기존의 어댑터를 사용하도록 수정
+        loadIncludeData();
         if (newIncludeKeywordAdapter == null){
         newIncludeKeywordAdapter = new NewIncludeKeywordAdapter(keywordIncludeDataList);}
         recyclerView.setAdapter(newIncludeKeywordAdapter);
@@ -459,6 +460,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void loadIncludeData(){
+        GlobalData.loginUser.getUserToken();
+//        keywordIncludeDataList.add()
     }
 
     private void addDataToList(String newData) {

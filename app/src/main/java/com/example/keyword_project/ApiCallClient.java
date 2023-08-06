@@ -12,6 +12,19 @@ import com.google.gson.JsonParser;
 import java.util.Map;
 
 public class ApiCallClient {
+
+    public static void callFindAllContainKeyword(Context context, String keyword,String userToken){
+        String serverUrl = "http://49.247.40.141:80/keyword/findAllContainKeyword";
+        String jsonData = "{\"keyword\":\""+keyword+ "\"," +
+                "\"ownerId\":\""+userToken +
+                "\"}";
+        PostApiTask task = new PostApiTask((responseCode,result) -> {
+            if(responseCode==200){
+                Toast.makeText(context,"포함 키워드 로드 ",Toast.LENGTH_SHORT).show();
+            }
+        });
+        task.execute(serverUrl,jsonData);
+    }
     public static void callUpdateSetting(Context context, int type, Map<String,Object> data) {
         String serverUrl = "http://49.247.40.141:80/update";
         String jsonData = "";
