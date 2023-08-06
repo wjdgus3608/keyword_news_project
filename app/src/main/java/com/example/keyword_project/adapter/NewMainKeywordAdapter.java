@@ -59,7 +59,7 @@ public class NewMainKeywordAdapter extends RecyclerView.Adapter<NewMainKeywordAd
                     Map<String,Object> map = new HashMap<>();
                     map.put("keyword",GlobalData.clickedKeyword);
                     map.put("removeContainKeyword",data.get(position));
-                    ApiCallClient.callUpdateSetting(GlobalData.mainContext,4, GlobalData.loginUser,map);
+                    ApiCallClient.callUpdateSetting(GlobalData.mainContext,4, map);
 
                     removeItem(position);
                 }

@@ -135,13 +135,9 @@ public class MainActivity extends AppCompatActivity {
                 changeClickedKeyword(adapter, dataList, pos);
                 renderNewsItem();
 
-                if (GlobalData.clickedKeyword == "+"){
-                    setMainkeyWord(dataList);
-                }
             } else {
-                showAddKeywordPopup();
+                showAddKeywordPopup(dataList);
             }
-
         });
     }
 
@@ -158,8 +154,8 @@ public class MainActivity extends AppCompatActivity {
         newsItemAdapter.notifyDataSetChanged();
     }
 
-    private void showAddKeywordPopup() {
-
+    private void showAddKeywordPopup(List<NewsKeyword> dataList) {
+        setMainkeyWord(dataList);
     }
 
     private void resetPreviousKeywordView(List<NewsKeyword> dataList) {
@@ -174,16 +170,11 @@ public class MainActivity extends AppCompatActivity {
     private List<NewsKeyword> getKeywordList() {
         List<NewsKeyword> list = new ArrayList<>();
 
-        list.add(new NewsKeyword("속보", true));
-        list.add(new NewsKeyword("특징주", false));
-        list.add(new NewsKeyword("김하성", false));
-        list.add(new NewsKeyword("첼시", false));
-        list.add(new NewsKeyword("LG", false));
-        list.add(new NewsKeyword("LG", false));
-        list.add(new NewsKeyword("LG", false));
+        for (String s : keywordMainDataList){
+            list.add(new NewsKeyword(s, false));
+        }
 
         addPlusBtn(list);
-
         return list;
     }
 
@@ -406,8 +397,8 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(newIncludeKeywordAdapter);
 
         //기존데이터 있으면 넣기.
-        newIncludeKeywordAdapter.addItem("포함키워드 테스트1");
-        newIncludeKeywordAdapter.addItem("포함키워드 테스트2");
+        //newIncludeKeywordAdapter.addItem("포함키워드 테스트1");
+        //newIncludeKeywordAdapter.addItem("포함키워드 테스트2");
 
         // 뷰에서 addKeywordButton을 찾음
         Button addKeywordButton = view.findViewById(R.id.addKeywordButton);
@@ -450,8 +441,8 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(newExcludeKeywordAdapter);
 
         //기존데이터 있으면 넣기.
-        newExcludeKeywordAdapter.addItem("제외키워드 테스트1");
-        newExcludeKeywordAdapter.addItem("제외키워드 테스트2");
+        //newExcludeKeywordAdapter.addItem("제외키워드 테스트1");
+        //newExcludeKeywordAdapter.addItem("제외키워드 테스트2");
 
         // 뷰에서 addKeywordButton을 찾음
         Button addKeywordButton = view.findViewById(R.id.excludeAddKeywordButton);
@@ -490,13 +481,12 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // 기존의 어댑터를 사용하도록 수정
-        if (newMainKeywordAdapter == null){
-            newMainKeywordAdapter = new NewExcludeKeywordAdapter(keywordMainDataList);}
-
+        keywordMainDataList.clear();
+        newMainKeywordAdapter = new NewExcludeKeywordAdapter(keywordMainDataList);
         recyclerView.setAdapter(newMainKeywordAdapter);
 
         //기존데이터 있으면 넣기.
-        for (int i = 0 ; i < dataList.size() ; i++){
+        for (int i = 0 ; i < dataList.size()-1 ; i++){
             newMainKeywordAdapter.addItem(dataList.get(i).getKeyword());
         }
 
@@ -510,9 +500,13 @@ public class MainActivity extends AppCompatActivity {
             if (!newKeyword.isEmpty()) {
                 addDataToMainList(newKeyword);
                 Map<String,Object> map = new HashMap<>();
-                ApiCallClient.callUpdateSetting(this,5,GlobalData.loginUser,map);
+                ApiCallClient.callUpdateSetting(this,5,map);
                 keywordEditText.setText("");
             }
+        });
+
+        dialog.setOnDismissListener(dialogInterface -> {
+            setNewsKeywordRecyclerView();
         });
     }
 
