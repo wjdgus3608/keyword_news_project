@@ -63,31 +63,31 @@ public class ApiCallClient {
                 break;
             //시간 세팅 업데이트
             case 1:
-/*                jsonData = "{\"userToken\":\""+GlobalData.loginUser.getUserToken()+ "\"," +
+                jsonData = "{\"userToken\":\""+GlobalData.loginUser.getUserToken()+ "\"," +
                         "\"updateType\":\"FETCH_TIME\"," +
-                        "\"updateValue\":\""+!isSettingAlaramBtnClicked+
+                        "\"updateValue\":\""+(String)data.get("fetchTime")+
                         "\"}";
 
                 task = new PostApiTask((responseCode,result) -> {
                     if(responseCode==200){
-                        Toast.makeText(this,"시간이 재설정되었습니다.",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context,"시간이 재설정되었습니다.",Toast.LENGTH_SHORT).show();
                     }
                 });
-                task.execute(serverUrl,jsonData);*/
+                task.execute(serverUrl,jsonData);
                 break;
             //주기 세팅 업데이트
             case 2:
-              /*  jsonData = "{\"userToken\":\""+GlobalData.loginUser.getUserToken()+ "\"," +
+                jsonData = "{\"userToken\":\""+GlobalData.loginUser.getUserToken()+ "\"," +
                         "\"updateType\":\"FETCH_INTERVAL\"," +
-                        "\"updateValue\":\""+!isSettingAlaramBtnClicked+
+                        "\"updateValue\":\""+(String)data.get("fetchInterval")+
                         "\"}";
 
                 task = new PostApiTask((responseCode,result) -> {
                     if(responseCode==200){
-                        Toast.makeText(this,"주기 "+(!isSettingAlaramBtnClicked?"On":"Off"),Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context,"주기가 업데이트되었습니다.",Toast.LENGTH_SHORT).show();
                     }
                 });
-                task.execute(serverUrl,jsonData);*/
+                task.execute(serverUrl,jsonData);
                 break;
             //포함키워드 추가
             case 3:
@@ -98,7 +98,7 @@ public class ApiCallClient {
 
                 task = new PostApiTask((responseCode, result) -> {
                     if (responseCode == 200) {
-//                        Toast.makeText(this,"주기 "+(!isSettingAlaramBtnClicked?"On":"Off"),Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context,"포함키워드 추가",Toast.LENGTH_SHORT).show();
                     }
                 });
                 task.execute("http://49.247.40.141:80/keyword/addContainKeyword", jsonData);

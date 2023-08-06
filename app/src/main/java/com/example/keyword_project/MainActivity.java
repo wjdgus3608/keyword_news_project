@@ -287,6 +287,10 @@ public class MainActivity extends AppCompatActivity {
 
         ImageButton settingBtn = dialog.findViewById(R.id.sub_alaram_btn);
         settingBtn.setImageResource(!isSettingAlaramBtnClicked ? R.drawable.icon_alarm : R.drawable.icon_noalarm);
+        TextView textView = dialog.findViewById((R.id.sub_alaram_text2));
+        textView.setText(isSettingAlaramBtnClicked ? "OFF" : "ON");
+
+
         Log.i("my@@","load "+isSettingAlaramBtnClicked);
     }
 
@@ -318,6 +322,17 @@ public class MainActivity extends AppCompatActivity {
 
         settingBtn3.setOnClickListener(v -> {
             setCycleTime(settingBtn3, textView3);
+            Map<String, Object> map = new HashMap<>();
+            String result = "";
+            switch (setCycleTimeIndex){
+                case 0: result = "0";break;
+                case 1: result = "5";break;
+                case 2: result = "30";break;
+                case 3: result = "60";break;
+                case 4: result = "120";break;
+            }
+            map.put("fetchInterval",result);
+            ApiCallClient.callUpdateSetting(this,2,map);
         });
 
         settingBtn4.setOnClickListener(v ->{
@@ -382,6 +397,12 @@ public class MainActivity extends AppCompatActivity {
 
         Button alarmChoiceButton = dialogView.findViewById(R.id.alaramChoice);
         alarmChoiceButton.setOnClickListener(v -> {
+            String startTime = parseTime(clockText2.getText().toString());
+            String endTime =  parseTime(clockText4.getText().toString());
+            Map<String, Object> map = new HashMap<>();
+            map.put("fetchTime",startTime+endTime);
+            ApiCallClient.callUpdateSetting(this,1,map);
+
             dialog.dismiss();
         });
 
@@ -390,6 +411,11 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    private String parseTime(String time){
+        StringBuilder sb = new StringBuilder();
+        String[] parsed = time.split(":");
+        return sb.append(String.format("%02d", Integer.parseInt(parsed[0]))).append(String.format("%02d", Integer.parseInt(parsed[1]))).toString();
+    }
     private void setIncludekeyWord() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
