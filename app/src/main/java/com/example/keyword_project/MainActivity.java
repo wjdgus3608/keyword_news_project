@@ -273,10 +273,46 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadUserSetting(AlertDialog dialog){
+        //알림 정보 로드
         isSettingAlaramBtnClicked = !GlobalData.loginUser.isAlarmAllowed();
-
         ImageButton settingBtn = dialog.findViewById(R.id.sub_alaram_btn);
         settingBtn.setImageResource(!isSettingAlaramBtnClicked ? R.drawable.icon_alarm : R.drawable.icon_noalarm);
+        TextView textView = dialog.findViewById((R.id.sub_alaram_text2));
+        textView.setText(!isSettingAlaramBtnClicked ? "OFF" : "ON");
+
+        //시간 정보 로드
+        TextView clockText2 = dialog.findViewById((R.id.sub_clock_text2));
+        TextView clockText4 = dialog.findViewById((R.id.sub_clock_text4));
+        String time = GlobalData.loginUser.getFetchTime();
+        clockText2.setText(time.substring(0,2)+":"+time.substring(2,2));
+        clockText4.setText(time.substring(4,2)+":"+time.substring(6,2));
+        //주기 정보 로드
+        String cycleTime = GlobalData.loginUser.getFetchInterval();
+        TextView textView3 =  dialog.findViewById((R.id.sub_cycle_text2));
+        String cycleText = "";
+        switch (cycleTime){
+            case "0":
+                cycleText = "실시간";
+                break;
+            case "5":
+                cycleText = "5분";
+                break;
+            case "30":
+                cycleText = "30분";
+                break;
+            case "60":
+                cycleText = "1시간";
+                break;
+            case "120":
+                cycleText = "2시간";
+                break;
+        }
+        textView3.setText(cycleText);
+        //포함키워드 로드
+
+        //제외키워드 로드
+
+
         Log.i("my@@","load "+isSettingAlaramBtnClicked);
     }
 
