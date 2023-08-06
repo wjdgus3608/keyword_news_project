@@ -76,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
         Log.i("my@@",this+userData.toString());
         GlobalData.loginUser = userData;
         GlobalData.mainContext = this;
+        GlobalData.userToken = userData.getUserToken();
 
         FirebaseApp.initializeApp(this);
 
@@ -243,6 +244,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void openPopUp() {
         if (!isPopupShown) {
+            ApiCallClient.callGetUserAgain(this,GlobalData.userToken);
             // 팝업을 띄우기 위한 AlertDialog.Builder 생성
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 
@@ -273,6 +275,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadUserSetting(AlertDialog dialog){
+
         //알림 정보 로드
         isSettingAlaramBtnClicked = !GlobalData.loginUser.isAlarmAllowed();
         ImageButton settingBtn = dialog.findViewById(R.id.sub_alaram_btn);
@@ -430,6 +433,7 @@ public class MainActivity extends AppCompatActivity {
 
         Button alarmChoiceButton = dialogView.findViewById(R.id.alaramChoice);
         alarmChoiceButton.setOnClickListener(v -> {
+            Log.i("my@@",clockText2.getText().toString());
             String startTime = parseTime(clockText2.getText().toString());
             String endTime =  parseTime(clockText4.getText().toString());
             Map<String, Object> map = new HashMap<>();
