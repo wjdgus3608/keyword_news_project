@@ -281,7 +281,7 @@ public class MainActivity extends AppCompatActivity {
         ImageButton settingBtn = dialog.findViewById(R.id.sub_alaram_btn);
         settingBtn.setImageResource(!isSettingAlaramBtnClicked ? R.drawable.icon_alarm : R.drawable.icon_noalarm);
         TextView textView = dialog.findViewById((R.id.sub_alaram_text2));
-        textView.setText(!isSettingAlaramBtnClicked ? "OFF" : "ON");
+        textView.setText(isSettingAlaramBtnClicked ? "OFF" : "ON");
 
         //시간 정보 로드
         TextView clockText2 = dialog.findViewById((R.id.sub_clock_text2));
@@ -416,6 +416,13 @@ public class MainActivity extends AppCompatActivity {
         timePicker_start.setIs24HourView(true);
         timePicker_end.setIs24HourView(true);
 
+
+        String[] startTime1 = clockText2.getText().toString().split(":");
+        String[] endTime1 = clockText4.getText().toString().split(":");
+        timePicker_start.setHour(Integer.parseInt(startTime1[0]));
+        timePicker_start.setMinute(Integer.parseInt(startTime1[1]));
+        timePicker_end.setHour(Integer.parseInt(endTime1[0]));
+        timePicker_end.setMinute(Integer.parseInt(endTime1[1]));
 
         timePicker_start.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
             @Override
